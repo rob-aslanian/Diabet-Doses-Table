@@ -1,0 +1,77 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700);body{
+    font-size: 1.25rem;
+    font-family: 'Roboto', sans-serif;;
+    max-height: 100vh;
+}
+table , th , td{
+    border:3px solid #000;
+    padding: 0.65rem;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.25rem;
+}
+table tr th:first-child{  cursor: pointer; }
+
+/** Classes **/
+.apidra , .lantus {
+    color:#ccc;
+}
+.apidra::after{content: 'A'; }
+.lantus::after{content: 'L';}
+
+.date{
+    width: 25%;
+    background-image: linear-gradient(
+        to top right,
+        #fff calc(50% - 2px),
+        #000 ,
+        #fff calc(50% + 2px)
+      );
+}
+
+.date span:first-child{float: right;}
+.date span:last-child{float: left;}
+.line{clear: both;}
+
+.hide{
+    display: none;
+}
+
+.close{
+    position: absolute;
+    right: 0;
+    top: -10%;
+    cursor: pointer;
+}
+
+/** Modal */
+.modal{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(11,11, 11, 0.5);
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+.modal-content{
+    background: rgba(33 ,22,33 ,  0.35);
+    padding: 1.5rem;
+    border-radius: 3px;
+    position: relative;
+}
+.group{
+    display: inline-flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+#durotation{
+    width: 25%;
+}

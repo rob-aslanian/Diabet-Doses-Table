@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../dist/css/style.css">
+    <title>&rarr; Diabet Table &larr;</title>
+</head>
+
+<body>
+    <button class="save_btn">Save Data</button>
+    <button class="load_btn">Load Data</button>
+    <select name="langs">
+        <option value="" disabled>Languages</option>
+        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
+        <option value="ru" data-lang="ru" class="lang">Russian</option>
+        <option value="en" data-lang="en" class="lang">English</option>
+    </select>
+    <table>
+        <thead>
+            <tr>
+                <td class="date">
+                    <span class="day">დრო</span>
+                    <div class="line"></div>
+                    <span class="time">დღე</span>
+                </td>
+                <td>9:00</td>
+                <td>15:00</td>
+                <td>19:00</td>
+                <td>22:00</td>
+                <td>5:00</td>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <div class="modal">
+        <div class="modal-content">
+            <form>
+                <div class="group">
+                    <input type="date" id="date">
+                    <input type="number" id="durotation" placeholder="10">
+                    <button class="set_date">Submit</button>
+                </div>
+
+            </form>
+            <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
+        </div>
+    </div>
+
+    <button class="add_row">+</button>
+
+    <button id="start_modal" onclick="document.querySelector('.modal').style.display = 'flex'">Set Date</button>
+
+    <button class="print">Print</button>
+
+    <script src="../dist/js/bundle.js"></script>
+</body>
+
+</html>
