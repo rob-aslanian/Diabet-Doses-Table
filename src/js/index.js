@@ -147,7 +147,7 @@ if (location.pathname === "/") {
       fragment = document.createDocumentFragment(),
       idx = 0;
 
-    for (let i = 0; i < injTime.length + 1; i++) {
+    for (let i = 0; i <= injTime.length; i++) {
       let td = document.createElement("td");
       if (i === 0) {
         td.setAttribute("data-lang", Common.getCookie("_lang"));
@@ -159,6 +159,7 @@ if (location.pathname === "/") {
           if (index === idx) {
             let time = el.getAttribute("data-time");
             td.setAttribute("data-time", time);
+            console.log(time);
           }
         });
         td.className = "dose";
@@ -270,6 +271,12 @@ if (location.pathname === "/") {
       let childs = Array.prototype.slice.call(el.children);
       let day = childs[0].textContent;
       let sugars = [];
+      let docTimes = [];
+      document.querySelectorAll(".inj_time").forEach(el => {
+        docTimes.push(el.dataset.time);
+      });
+
+      console.log(docTimes);
 
       childs.map((elem, index) => {
         if (index !== 0) {
