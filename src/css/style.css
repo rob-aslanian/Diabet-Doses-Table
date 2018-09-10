@@ -92,7 +92,19 @@ table tr th:first-child {
 #durotation {
   width: 25%;
 }
-.add_row {
+.ins_type {
+  position: relative;
+  display: block;
+  margin-bottom: 0.5rem;
+  height: 30px;
+}
+.ins_type::after {
+  content: attr(data-css);
   position: absolute;
-  bottom: 0;
+}
+.inp_group {
+  display: inline-flex;
+}
+.inp_group select {
+  margin-left: calc(-25%);
 }

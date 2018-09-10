@@ -1,256 +1,359 @@
-import DayDate from "./date";
-import { DOSE as Dose, INJECTION as Insulin } from "./dose";
+import Common from "./utils/common";
+import DayDate from "./utils/date";
+import { DOSE as Dose, INJECTION as Insulin } from "./utils/dose";
+import db from "./utils/init";
+import "./table_dose";
+import { types } from "util";
 
 /**
  * Diabet Table Creater
  *
  * @author Robert Asllanyan
- * @version 2.7
+ * @version 3.5
  *
  * Last Modify 06/6/2018
  */
 
-const addBtn = document.querySelector(".add_row"); // Button from adding new row
-const setBtn = document.querySelector(".set_date"); // Button from set date
-const modal = document.querySelector(".modal"); // Modal
-const printBtn = document.querySelector(".print"); // Button from printing
-const tableBody = document.querySelector("tbody"); // Table Body
-const saveBtn = document.querySelector(".save_btn"); // Button from save data
-const loadBtn = document.querySelector(".load_btn"); // Button from load data
-const buttons = document.querySelectorAll("button"); // All button (for print)
-const min = 60; // Min value of sugar in blood
-const max = 460; // Max value of sugar in blodd
+if (location.pathname === "/") {
+  const addBtn = document.querySelector(".add_row"); // Button from adding new row
+  const setBtn = document.querySelector(".set_date"); // Button from set date
+  const modal = document.querySelector(".modal"); // Modal
+  const printBtn = document.querySelector(".print"); // Button from printing
+  const tableBody = document.querySelector("tbody"); // Table Body
+  const saveBtn = document.querySelector(".save_btn"); // Button from save data
+  const loadBtn = document.querySelector(".load_btn"); // Button from load data
+  const buttons = document.querySelectorAll("button"); // All button (for print)
+  const min = 60; // Min value of sugar in blood
+  const max = 460; // Max value of sugar in blodd
+  const langs = document.querySelector(".langs");
 
-let date = new DayDate();
-date.getNow();
+  let date = new DayDate();
+  date.getNow();
 
-setBtn.addEventListener("click", setDate);
-addBtn.addEventListener("click", addRow);
+  setBtn.addEventListener("click", setDate);
+  addBtn.addEventListener("click", addRow);
 
-saveBtn.addEventListener("click", saveData);
-loadBtn.addEventListener("click", loadData);
+  saveBtn.addEventListener("click", saveData);
+  loadBtn.addEventListener("click", loadData);
 
-/**
- * Calculate Insulin Doses and
- * set the values in the table
- *
- * @param {Number} num
- * @param {Number} type
- */
-function calcDose(num, type) {
-  let length = Dose.from.length;
-  let value = this.firstChild.value || num;
-  let result = null;
+  langs.addEventListener("change", langChange);
 
-  for (let i = 0; i < length; i++) {
-    if (num <= Dose.to[i] && num >= Dose.from[i]) {
-      if (Insulin[type].lantus !== undefined) {
-        result = {
-          apidra: Insulin[type].apidra[i],
-          lantus: Insulin[type].lantus[i]
-        };
-      } else result = Insulin[type].apidra[i];
+  (async function() {
+    let defaultLang = langs.options[langs.selectedIndex].getAttribute(
+        "data-lang"
+      ),
+      docTimes = await Common.getAllDocs(db, "Doses");
+    let fr = document.createDocumentFragment();
+
+    docTimes.forEach((docTime, idx) => {
+      let th = document.createElement("th");
+      th.textContent = docTime;
+      th.className = "inj_time";
+      th.setAttribute("data-index", idx);
+      th.setAttribute("data-time", docTime);
+
+      fr.appendChild(th);
+    });
+
+    document.querySelector(".table_head").appendChild(fr);
+    /** Set Language Value  */
+    Common.setCookie("_lang", defaultLang, 1);
+
+    document.querySelectorAll(".inj_time").forEach(el => {
+      el.addEventListener("dblclick", removeColumn);
+    });
+
+    function removeColumn(e) {
+      let time = e.target.dataset.time,
+        idx = docTimes.indexOf(time),
+        trCount = document.querySelectorAll(".data").length;
+
+      if (trCount === 0) {
+        docTimes.splice(idx, 1);
+        e.target.remove();
+      }
     }
-  }
-
-  if (!value) this.innerHTML += ``;
-
-  if (typeof result === "object" && result) {
-    return (this.innerHTML = `
-                   <span>${value}</span>
-                   <span class="apidra">${result.apidra}</span>
-                   <span class="lantus">${result.lantus}</span>
-                   
-        `);
-  }
-  if (result !== undefined && result) {
-    return (this.innerHTML = `
-                   <span>${value}</span>
-                   <span class="apidra">${result}</span>
-                   `);
-  } else return (this.innerHTML = `<span>${value}</span>`);
-}
-
-/**
- * Add new row to the table
- *
- * @param {Event|String} pointDates
- *
- */
-function addRow(pointDates) {
-  let tr = document.createElement("tr"),
-    idx = 0;
-
-  for (let i = 0; i < 6; i++) {
-    let th = document.createElement("th");
-
-    if (i === 0)
-      th.textContent =
-        typeof pointDates === "string" ? pointDates : date.getPrevDay();
-    else {
-      th.className = "dose";
-      th.setAttribute("data-index", idx++);
-      th.innerHTML = `<input type="text">`;
-    }
-
-    tr.className = "data";
-    tr.appendChild(th);
-  }
+  })();
 
   /**
-   * Delete Row
+   * Calculate Insulin Doses and
+   * set the values in the table
+   *
+   * @param {Number} num
+   * @param {Number} type
    */
-  tr.addEventListener("dblclick", e => {
-    let tag = e.target.localName == "th";
-    let hasClass = e.target.className == "";
+  function calcDose(num, type) {
+    let value = this.firstChild.value || num,
+      docRef = db.collection("Doses").doc(type);
 
-    if (tag && hasClass) return e.target.parentNode.remove();
-  });
+    docRef.get().then(el => {
+      if (el && el.exists) {
+        let data = el.data(),
+          type = data["type"],
+          result = {};
 
-  tableBody.appendChild(tr);
-
-  let inputsField = document.querySelectorAll(".dose");
-
-  inputsField.forEach(input => {
-    input.addEventListener("keyup", addSugar); // Event from calculated doses
-    input.addEventListener("dblclick", changeValue); // Event from edit value
-  });
-}
-
-/**
- * Change value in the table , also
- * calculate new doses for new sugar value
- * @param {Event} e
- */
-function changeValue(e) {
-  let dose =
-    e.target.className == "dose" ? e.target : e.target.className !== "apidra";
-  let value = null;
-  let index = null;
-
-  if (dose.children !== undefined) {
-    value = Number(dose.children[0].textContent);
-    index = dose.getAttribute("data-index");
-
-    dose.children[0].innerHTML = `<input type="text" value=${value} data-index=${index}>`;
-  } else if (dose) {
-    value = e.target.textContent;
-    index = e.target.parentNode.getAttribute("data-index");
-
-    e.target.innerHTML = `<input type="text" value=${value} data-index="${index}">`;
-  }
-}
-/**
- * Set Date
- * @param {Event} e
- */
-function setDate(e) {
-  e.preventDefault();
-
-  const dates = document.querySelector("#date").value;
-  const dur = Number(document.querySelector("#durotation").value);
-
-  if (dur && dates && dur > 0) {
-    let fullDate = dates.split("-");
-    let start = `${fullDate[1]} ${fullDate[2]}, ${fullDate[0]}`;
-
-    let setDates = date.setFromTo(start, dur);
-
-    setDates.forEach(dates => {
-      let template = `${dates.day} ${dates.month}`;
-      addRow(template);
-    });
-    modal.style.display = "none";
-  }
-}
-/**
- * Add  value for the sugar value
- * @param {Event} e
- */
-function addSugar(e) {
-  let input = e.target,
-    value = Number(input.value),
-    index =
-      e.target.parentNode.getAttribute("data-index") || // Index of column
-      input.getAttribute("data-index");
-
-  if (e.which === 13 && (value >= min && value <= max))
-    calcDose.call(this, value, index);
-  else if (e.which === 27) return (this.innerHTML = `<span></span>`);
-}
-
-/** Save and Load from localStorage */
-
-/**
- * Save Data to localStorage
- */
-function saveData(e) {
-  let tr = document.querySelectorAll('tr[class="data"]');
-  let data = JSON.parse(localStorage.getItem("sugar"));
-  let result = [];
-
-  tr.forEach((el, idx) => {
-    let childs = Array.prototype.slice.call(el.children);
-    let day = childs[0].textContent;
-    let sugars = [];
-
-    childs.map((elem, index) => {
-      if (index !== 0) {
-        let sugarResult = elem.firstChild.nextSibling || elem.firstChild;
-
-        if (sugarResult && sugarResult.previousElementSibling)
-          sugars.push(sugarResult.previousElementSibling.textContent);
-        else if (sugarResult && sugarResult.textContent)
-          sugars.push(sugarResult.textContent);
-        else sugars.push("");
+        if (data[type] !== undefined) {
+          data[type].forEach($data => {
+            if (createDoseObj($data, value) !== undefined) {
+              result[type] = createDoseObj($data, value);
+            }
+          });
+        } else {
+          if (Common.isArray(type)) {
+            type.forEach(tp => {
+              data[tp].forEach($data => {
+                if (createDoseObj($data, value) !== undefined) {
+                  result[tp] = createDoseObj($data, value);
+                }
+              });
+            });
+          }
+        }
+        createSpan(this, result, value);
       }
     });
 
-    result.push({
-      day,
-      sugars
-    });
+    function createDoseObj($data, value) {
+      let from = $data.from,
+        to = $data.to,
+        dose = $data.dose;
 
-    localStorage.setItem("sugar", JSON.stringify(result));
-  });
-}
-
-/**
- * Load Date from localStorage
- */
-function loadData() {
-  const data = JSON.parse(localStorage.getItem("sugar"));
-
-  let sugars = [];
-
-  if (data) {
-    data.map(el => {
-      sugars.push(...el.sugars);
-      loadSuagrs(el.day, sugars);
+      if (value <= to && value >= from) {
+        return dose;
+      }
+    }
+  }
+  function createSpan(el, obj, value) {
+    let keys = Object.keys(obj);
+    el.innerHTML = `<span>${value}</span> <br/>`;
+    keys.forEach(key => {
+      if (obj[key] !== 0) {
+        return (el.innerHTML += ` <span class="${key}">${obj[key]}</span>`);
+      }
     });
   }
 
-  this.setAttribute("disabled", "disabled");
-}
+  /**
+   * Add new row to the table
+   *
+   * @param {Event|String} pointDates
+   *
+   */
+  function addRow(pointDates) {
+    let tr = document.createElement("tr"),
+      injTime = Array.prototype.slice.call(
+        document.querySelectorAll(".inj_time")
+      ),
+      fragment = document.createDocumentFragment(),
+      idx = 0;
 
-function loadSuagrs(day, sugars) {
-  addRow(day);
-  let doses = document.querySelectorAll(".dose");
+    for (let i = 0; i < injTime.length + 1; i++) {
+      let td = document.createElement("td");
+      if (i === 0) {
+        td.setAttribute("data-lang", Common.getCookie("_lang"));
+        td.textContent =
+          typeof pointDates === "string" ? pointDates : date.getPrevDay();
+      } else {
+        injTime.forEach(el => {
+          let index = Number(el.getAttribute("data-index"));
+          if (index === idx) {
+            let time = el.getAttribute("data-time");
+            td.setAttribute("data-time", time);
+          }
+        });
+        td.className = "dose";
+        td.setAttribute("data-index", idx++);
+        td.innerHTML = `<input type="text">`;
+      }
 
-  sugars.forEach((sugar, index) => {
-    let idx = doses[index].dataset.index;
-    calcDose.call(doses[index], sugar, idx);
+      tr.className = "data";
+      fragment.appendChild(td);
+    }
+
+    tr.appendChild(fragment);
+
+    /**
+     * Delete Row
+     */
+    tr.addEventListener("dblclick", e => {
+      let tag = e.target.localName == "td";
+      let hasClass = e.target.className == "";
+
+      if (tag && hasClass) return e.target.parentNode.remove();
+    });
+
+    tableBody.appendChild(tr);
+
+    let inputsField = document.querySelectorAll(".dose");
+
+    inputsField.forEach(input => {
+      input.addEventListener("keyup", addSugar); // Event from calculated doses
+      input.addEventListener("dblclick", changeValue); // Event from edit value
+    });
+  }
+
+  /**
+   * Change value in the table , also
+   * calculate new doses for new sugar value
+   * @param {Event} e
+   */
+  function changeValue(e) {
+    let dose =
+      e.target.className == "dose" ? e.target : e.target.className !== "apidra";
+
+    if (dose.children !== undefined) {
+      return updateDoseValue(dose);
+    } else if (dose) {
+      return updateDoseValue(e.target);
+    }
+  }
+
+  function updateDoseValue(el) {
+    let value = Number(el.textContent || el.children[0].textContent),
+      index =
+        el.getAttribute("data-index") ||
+        el.parentNode.getAttribute("data-index"),
+      time =
+        el.getAttribute("data-time") || el.parentNode.getAttribute("data-time");
+
+    return (el.innerHTML = `<input type="text" data-time="${time}" value=${value} data-index="${index}">`);
+  }
+  /**
+   * Set Date
+   * @param {Event} e
+   */
+  function setDate(e) {
+    e.preventDefault();
+
+    const dates = document.querySelector("#date").value;
+    const dur = Number(document.querySelector("#durotation").value);
+
+    if (dur && dates && dur > 0) {
+      let fullDate = dates.split("-");
+      let start = `${fullDate[1]} ${fullDate[2]}, ${fullDate[0]}`;
+
+      let setDates = date.setFromTo(start, dur);
+
+      setDates.forEach(dates => {
+        let template = `${dates.day} ${dates.month}`;
+        addRow(template);
+      });
+      modal.style.display = "none";
+    }
+  }
+  /**
+   * Add  value for the sugar value
+   * @param {Event} e
+   */
+  function addSugar(e) {
+    let input = e.target,
+      value = Number(input.value),
+      index =
+        e.target.parentNode.getAttribute("data-time") || // Index of column
+        input.getAttribute("data-time");
+
+    if (e.which === 13 && (value >= min && value <= max))
+      calcDose.call(this, value, index);
+    else if (e.which === 27) return (this.innerHTML = `<span></span>`);
+  }
+
+  /** Save and Load from localStorage */
+
+  /**
+   * Save Data to localStorage
+   */
+  function saveData(e) {
+    let tr = document.querySelectorAll('tr[class="data"]');
+    let result = [];
+
+    tr.forEach(el => {
+      let childs = Array.prototype.slice.call(el.children);
+      let day = childs[0].textContent;
+      let sugars = [];
+
+      childs.map((elem, index) => {
+        if (index !== 0) {
+          let sugarResult = elem.firstChild.nextSibling || elem.firstChild;
+
+          if (sugarResult && sugarResult.previousElementSibling)
+            sugars.push(sugarResult.previousElementSibling.textContent);
+          else if (sugarResult && sugarResult.textContent)
+            sugars.push(sugarResult.textContent);
+          else sugars.push("");
+        }
+      });
+
+      result.push({
+        day,
+        sugars
+      });
+
+      localStorage.setItem("sugar", JSON.stringify(result));
+    });
+  }
+
+  /**
+   * Load Date from localStorage
+   */
+  function loadData() {
+    const data = JSON.parse(localStorage.getItem("sugar"));
+
+    let sugars = [];
+
+    if (data) {
+      data.map(el => {
+        sugars.push(...el.sugars);
+        loadSuagrs(el.day, sugars);
+      });
+    }
+
+    this.setAttribute("disabled", "disabled");
+  }
+
+  function loadSuagrs(day, sugars) {
+    addRow(day);
+    let doses = document.querySelectorAll(".dose");
+
+    sugars.forEach((sugar, index) => {
+      let time = doses[index].dataset.time;
+      calcDose.call(doses[index], sugar, time);
+    });
+  }
+
+  /** Language Change  */
+  function langChange() {
+    let selectedLang = this.options[this.selectedIndex].getAttribute(
+        "data-lang"
+      ),
+      langs = {
+        ge: { time: "დრო", day: "დღე" },
+        ru: { time: "Время", day: "День" },
+        en: { time: "Time", day: "Day" }
+      },
+      time = document.querySelector(".time"),
+      day = document.querySelector(".day");
+
+    if (Common.getCookie("_lang")) {
+      let lan = langs[selectedLang];
+      time.textContent = lan.time;
+      day.textContent = lan.day;
+
+      Common.setCookie("_lang", selectedLang, 1);
+
+      return date.changeLang();
+    }
+  }
+
+  /** Print  */
+  printBtn.addEventListener("click", e => {
+    buttons.forEach(button => button.classList.add("hide"));
+    langs.classList.add("hide");
+    window.print();
   });
+
+  /** Reset  */
+  window.onafterprint = () => {
+    buttons.forEach(button => button.classList.remove("hide"));
+    langs.classList.remove("hide");
+  };
 }
-
-/** Print  */
-printBtn.addEventListener("click", e => {
-  buttons.forEach(button => button.classList.add("hide"));
-
-  window.print();
-});
-
-/** Reset  */
-window.onafterprint = () => {
-  buttons.forEach(button => button.classList.remove("hide"));
-};

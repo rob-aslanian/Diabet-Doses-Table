@@ -1,4 +1,5 @@
 import MONTH from "./months";
+import Common from "./common";
 
 class GetDate {
   constructor() {
@@ -21,26 +22,30 @@ class GetDate {
     return this.sDate;
   }
   getPrevDay() {
+    let lang = Common.getCookie("_lang");
+
     let nextDay = this.now || this.date;
     nextDay.setDate(nextDay.getDate() - 1);
 
     this.setDate(nextDay);
 
     let day = this.sDate.getDate(),
-      month = MONTH[this.sDate.getMonth()];
+      month = MONTH[lang][this.sDate.getMonth()];
 
     this.sDate = `${day} ${month}`;
 
     return this.sDate;
   }
   setFromTo(from, durotation) {
+    let lang = Common.getCookie("_lang");
+
     const start = new Date(from);
     const startMonth = start.getMonth();
     let dates = [];
 
     dates.push({
       day: start.getDate(),
-      month: MONTH[startMonth]
+      month: MONTH[lang][startMonth]
     });
 
     for (let i = 0; i < durotation; i++) {
@@ -48,11 +53,31 @@ class GetDate {
 
       dates.push({
         day: start.getDate(),
-        month: MONTH[start.getMonth()]
+        month: MONTH[lang][start.getMonth()]
       });
     }
 
     return dates;
+  }
+  changeLang() {
+    let rows = document.querySelectorAll(".data"),
+      selectedLang = Common.getCookie("_lang");
+
+    if (rows.length !== 0) {
+      rows.forEach(row => {
+        let el = row.firstChild,
+          lang = el.getAttribute("data-lang"),
+          date = el.textContent.split(" "),
+          day = date[0],
+          month = date[1];
+
+        if (selectedLang !== lang) {
+          let monthIndex = MONTH[lang].indexOf(month);
+          el.textContent = `${day} ${MONTH[selectedLang][monthIndex]}`;
+          el.setAttribute("data-lang", selectedLang);
+        }
+      });
+    }
   }
 }
 
