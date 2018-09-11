@@ -8,8 +8,15 @@ table,
 th,
 td {
   border: 3px solid #000;
-  padding: 0.65rem;
+  padding: 0.65rem 0;
   position: relative;
+}
+hr {
+  position: relative;
+  height: 2px;
+  background: #000;
+  width: 100%;
+  z-index: -3;
 }
 table {
   border-collapse: collapse;
@@ -17,8 +24,13 @@ table {
   text-align: center;
   margin-top: 0.25rem;
 }
-table tr th:first-child {
+table thead {
+  background: #212529;
+  color: #fff;
   cursor: pointer;
+}
+tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /** Classes **/
@@ -37,10 +49,11 @@ table tr th:first-child {
   width: 25%;
   background-image: linear-gradient(
     to top right,
-    #fff calc(50% - 2px),
-    #000,
-    #fff calc(50% + 2px)
+    #212529 calc(50% - 2px),
+    #fff,
+    #212529 calc(50% + 2px)
   );
+  padding: 0.5rem;
 }
 
 .date span:first-child {

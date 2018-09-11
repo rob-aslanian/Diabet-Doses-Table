@@ -1,31 +1,29 @@
 import Common from "./utils/common";
 import DayDate from "./utils/date";
-import { DOSE as Dose, INJECTION as Insulin } from "./utils/dose";
 import db from "./utils/init";
 import "./table_dose";
-import { types } from "util";
 
 /**
  * Diabet Table Creater
  *
  * @author Robert Asllanyan
- * @version 3.5
+ * @version 4.0
  *
  * Last Modify 06/6/2018
  */
+const printBtn = document.querySelector(".print"); // Button from printing
 
 if (location.pathname === "/") {
   const addBtn = document.querySelector(".add_row"); // Button from adding new row
   const setBtn = document.querySelector(".set_date"); // Button from set date
   const modal = document.querySelector(".modal"); // Modal
-  const printBtn = document.querySelector(".print"); // Button from printing
   const tableBody = document.querySelector("tbody"); // Table Body
   const saveBtn = document.querySelector(".save_btn"); // Button from save data
   const loadBtn = document.querySelector(".load_btn"); // Button from load data
-  const buttons = document.querySelectorAll("button"); // All button (for print)
-  const min = 60; // Min value of sugar in blood
-  const max = 460; // Max value of sugar in blodd
+  const MIN = { mg: 60, mmol: 3.3 }; // Min value of sugar in blood
+  const MAX = { mg: 460, mmol: 25.5 }; // Max value of sugar in blodd
   const langs = document.querySelector(".langs");
+  const bgTypes = document.querySelector("#sugar_convertor");
 
   let date = new DayDate();
   date.getNow();
@@ -37,12 +35,14 @@ if (location.pathname === "/") {
   loadBtn.addEventListener("click", loadData);
 
   langs.addEventListener("change", langChange);
+  bgTypes.addEventListener("change", bgTypeChange);
 
   (async function() {
     let defaultLang = langs.options[langs.selectedIndex].getAttribute(
         "data-lang"
       ),
       docTimes = await Common.getAllDocs(db, "Doses");
+    let defaultType = bgTypes.options[bgTypes.selectedIndex].value;
     let fr = document.createDocumentFragment();
 
     docTimes.forEach((docTime, idx) => {
@@ -56,8 +56,6 @@ if (location.pathname === "/") {
     });
 
     document.querySelector(".table_head").appendChild(fr);
-    /** Set Language Value  */
-    Common.setCookie("_lang", defaultLang, 1);
 
     document.querySelectorAll(".inj_time").forEach(el => {
       el.addEventListener("dblclick", removeColumn);
@@ -73,6 +71,12 @@ if (location.pathname === "/") {
         e.target.remove();
       }
     }
+
+    /** Set Language Value  */
+    Common.setCookie("_lang", defaultLang, 1);
+
+    /** Set Type Value */
+    Common.setCookie("_type", defaultType, 1);
   })();
 
   /**
@@ -83,8 +87,9 @@ if (location.pathname === "/") {
    * @param {Number} type
    */
   function calcDose(num, type) {
-    let value = this.firstChild.value || num,
-      docRef = db.collection("Doses").doc(type);
+    let value = Number(this.firstChild.value) || Number(num),
+      docRef = db.collection("Doses").doc(type),
+      bgType = Common.getCookie("_type");
 
     docRef.get().then(el => {
       if (el && el.exists) {
@@ -109,28 +114,42 @@ if (location.pathname === "/") {
             });
           }
         }
-        createSpan(this, result, value);
+        value = bgType === "mg" ? Math.round(value) : value.toFixed(1);
+        createSpan(this, result, value, bgType);
       }
     });
-
-    function createDoseObj($data, value) {
-      let from = $data.from,
-        to = $data.to,
-        dose = $data.dose;
-
-      if (value <= to && value >= from) {
-        return dose;
-      }
-    }
   }
-  function createSpan(el, obj, value) {
+  function createSpan(el, obj, value, type) {
     let keys = Object.keys(obj);
     el.innerHTML = `<span>${value}</span> <br/>`;
+    el.setAttribute("data-type", type);
     keys.forEach(key => {
       if (obj[key] !== 0) {
         return (el.innerHTML += ` <span class="${key}">${obj[key]}</span>`);
       }
     });
+  }
+
+  function createDoseObj($data, value) {
+    let from = $data.from,
+      to = $data.to,
+      dose = $data.dose,
+      $value = null,
+      types = Common.getCookie("_type");
+
+    $value = types === "mg" ? value : mmolToMg(value);
+
+    if ($value <= to && $value >= from) {
+      return dose;
+    }
+  }
+
+  function mgToMmol(value) {
+    return (value / 18).toFixed(1);
+  }
+
+  function mmolToMg(value) {
+    return Math.round(value * 18);
   }
 
   /**
@@ -254,11 +273,12 @@ if (location.pathname === "/") {
       value = Number(input.value),
       index =
         e.target.parentNode.getAttribute("data-time") || // Index of column
-        input.getAttribute("data-time");
+        input.getAttribute("data-time"),
+      bgType = Common.getCookie("_type");
 
-    if (e.which === 13 && (value >= min && value <= max))
+    if (e.which === 13 && (value >= MIN[bgType] && value <= MAX[bgType])) {
       calcDose.call(this, value, index);
-    else if (e.which === 27) return (this.innerHTML = `<span></span>`);
+    } else if (e.which === 27) return (this.innerHTML = `<span></span>`);
   }
 
   /** Save and Load from localStorage */
@@ -267,8 +287,13 @@ if (location.pathname === "/") {
    * Save Data to localStorage
    */
   function saveData(e) {
-    let tr = document.querySelectorAll('tr[class="data"]');
-    let result = [];
+    let tr = document.querySelectorAll('tr[class="data"]'),
+      result = [],
+      type;
+    document.querySelectorAll(".dose").forEach(dose => {
+      if (dose.dataset.type !== undefined) type = dose.dataset.type;
+      else type = Common.getCookie("_type");
+    });
 
     tr.forEach(el => {
       let childs = Array.prototype.slice.call(el.children);
@@ -295,9 +320,9 @@ if (location.pathname === "/") {
         day,
         sugars
       });
-
       localStorage.setItem("sugar", JSON.stringify(result));
       localStorage.setItem("times", JSON.stringify(docTimes));
+      localStorage.setItem("type", type);
     });
   }
 
@@ -306,7 +331,6 @@ if (location.pathname === "/") {
    */
   function loadData() {
     const data = JSON.parse(localStorage.getItem("sugar"));
-
     let sugars = [];
 
     if (data) {
@@ -321,6 +345,7 @@ if (location.pathname === "/") {
 
   function loadSuagrs(day, sugars) {
     const times = JSON.parse(localStorage.getItem("times"));
+    const type = localStorage.getItem("type");
     addRow(day, times);
 
     let doses = document.querySelectorAll(".dose");
@@ -335,9 +360,18 @@ if (location.pathname === "/") {
     addBtn.setAttribute("disabled", "disabled");
     document.querySelector("#start_modal").setAttribute("disabled", "disabled");
 
+    /** Select the option , which was in local storage  */
+    Array.from(bgTypes.options).forEach(option => {
+      if (option.value === type) {
+        option.setAttribute("selected", "selected");
+      }
+    });
+    /** Set cookie by this type */
+    Common.setCookie("_type", type, 1);
+
     sugars.forEach((sugar, index) => {
       let time = doses[index].dataset.time;
-      calcDose.call(doses[index], sugar, time);
+      calcDose.call(doses[index], sugar, time, type);
     });
   }
 
@@ -365,16 +399,30 @@ if (location.pathname === "/") {
     }
   }
 
-  /** Print  */
-  printBtn.addEventListener("click", e => {
-    buttons.forEach(button => button.classList.add("hide"));
-    langs.classList.add("hide");
-    window.print();
-  });
+  /** Blood Glucose Type Change*/
+  function bgTypeChange() {
+    let selectedType = this.options[this.selectedIndex].value,
+      doses = document.querySelectorAll(".dose");
 
-  /** Reset  */
-  window.onafterprint = () => {
-    buttons.forEach(button => button.classList.remove("hide"));
-    langs.classList.remove("hide");
-  };
+    if (Common.getCookie("_type")) {
+      if (doses.length !== 0) {
+        doses.forEach(dose => {
+          let type = dose.dataset.type,
+            value = Number(dose.firstChild.textContent);
+          if (type !== undefined && type !== selectedType && value) {
+            let $value = type === "mg" ? mgToMmol(value) : mmolToMg(value);
+            dose.setAttribute("data-type", selectedType);
+            dose.firstChild.textContent = $value;
+          }
+        });
+      }
+      Common.setCookie("_type", selectedType, 1);
+    }
+  }
 }
+
+/** Print  */
+Common.print(printBtn);
+
+/** Reset  */
+Common.reset();

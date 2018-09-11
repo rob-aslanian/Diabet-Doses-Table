@@ -53,6 +53,27 @@ const funcs = {
         ${canDelete}
     </div>`;
   },
+  print(el) {
+    el.addEventListener("click", () => {
+      document
+        .querySelectorAll("button")
+        .forEach(button => button.classList.add("hide"));
+      document
+        .querySelectorAll("select")
+        .forEach(sel => sel.classList.add("hide"));
+      window.print();
+    });
+  },
+  reset() {
+    window.onafterprint = () => {
+      document
+        .querySelectorAll("button")
+        .forEach(button => button.classList.remove("hide"));
+      document
+        .querySelectorAll("select")
+        .forEach(sel => sel.classList.remove("hide"));
+    };
+  },
   async getAllDocs(db, coll) {
     let docs = [];
     await db
