@@ -139,29 +139,33 @@ if (location.pathname === "/") {
    * @param {Event|String} pointDates
    *
    */
-  function addRow(pointDates) {
+  function addRow(pointDates, times = null) {
     let tr = document.createElement("tr"),
       injTime = Array.prototype.slice.call(
         document.querySelectorAll(".inj_time")
       ),
       fragment = document.createDocumentFragment(),
-      idx = 0;
+      idx = 0,
+      len = times ? times.length : injTime.length;
 
-    for (let i = 0; i <= injTime.length; i++) {
+    for (let i = 0; i <= len; i++) {
       let td = document.createElement("td");
       if (i === 0) {
         td.setAttribute("data-lang", Common.getCookie("_lang"));
+        td.className = "date_time";
         td.textContent =
           typeof pointDates === "string" ? pointDates : date.getPrevDay();
       } else {
-        injTime.forEach(el => {
-          let index = Number(el.getAttribute("data-index"));
-          if (index === idx) {
-            let time = el.getAttribute("data-time");
-            td.setAttribute("data-time", time);
-            console.log(time);
-          }
-        });
+        if (!times) {
+          injTime.forEach((el, indx) => {
+            if (indx === idx) {
+              let time = el.getAttribute("data-time");
+              td.setAttribute("data-time", time);
+            }
+          });
+        } else {
+          td.setAttribute("data-time", times[idx]);
+        }
         td.className = "dose";
         td.setAttribute("data-index", idx++);
         td.innerHTML = `<input type="text">`;
@@ -172,7 +176,6 @@ if (location.pathname === "/") {
     }
 
     tr.appendChild(fragment);
-
     /**
      * Delete Row
      */
@@ -276,8 +279,6 @@ if (location.pathname === "/") {
         docTimes.push(el.dataset.time);
       });
 
-      console.log(docTimes);
-
       childs.map((elem, index) => {
         if (index !== 0) {
           let sugarResult = elem.firstChild.nextSibling || elem.firstChild;
@@ -296,6 +297,7 @@ if (location.pathname === "/") {
       });
 
       localStorage.setItem("sugar", JSON.stringify(result));
+      localStorage.setItem("times", JSON.stringify(docTimes));
     });
   }
 
@@ -318,8 +320,20 @@ if (location.pathname === "/") {
   }
 
   function loadSuagrs(day, sugars) {
-    addRow(day);
+    const times = JSON.parse(localStorage.getItem("times"));
+    addRow(day, times);
+
     let doses = document.querySelectorAll(".dose");
+
+    /** Remove times from column , which did`t icnlude times from local storage*/
+    document.querySelectorAll(".inj_time").forEach(el => {
+      let time = el.dataset.time;
+      if (!times.includes(time)) {
+        el.remove();
+      }
+    });
+    addBtn.setAttribute("disabled", "disabled");
+    document.querySelector("#start_modal").setAttribute("disabled", "disabled");
 
     sugars.forEach((sugar, index) => {
       let time = doses[index].dataset.time;
