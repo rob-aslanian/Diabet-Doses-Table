@@ -51,6 +51,7 @@ if (location.pathname === "/") {
       th.className = "inj_time";
       th.setAttribute("data-index", idx);
       th.setAttribute("data-time", docTime);
+      th.title = "Double click for delete column";
 
       fr.appendChild(th);
     });
@@ -167,6 +168,8 @@ if (location.pathname === "/") {
       idx = 0,
       len = times ? times.length : injTime.length;
 
+    tr.title = "Double click for delete row";
+
     for (let i = 0; i <= len; i++) {
       let td = document.createElement("td");
       if (i === 0) {
@@ -200,9 +203,7 @@ if (location.pathname === "/") {
      */
     tr.addEventListener("dblclick", e => {
       let tag = e.target.localName == "td";
-      let hasClass = e.target.className == "";
-
-      if (tag && hasClass) return e.target.parentNode.remove();
+      if (tag) return e.target.parentNode.remove();
     });
 
     tableBody.appendChild(tr);

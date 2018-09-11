@@ -19,6 +19,7 @@ hr {
   z-index: -3;
 }
 table {
+  position: relative;
   border-collapse: collapse;
   width: 100%;
   text-align: center;
@@ -45,6 +46,19 @@ tr:nth-child(even) {
   content: "L";
 }
 
+.add_row {
+  position: absolute;
+  background: #212529;
+  color: #fff;
+  font-size: 1.5rem;
+  border: unset;
+  margin-top: -14px;
+  outline: unset;
+}
+.btn_group {
+  margin-top: 25px;
+}
+
 .date {
   width: 25%;
   background-image: linear-gradient(
@@ -54,6 +68,12 @@ tr:nth-child(even) {
     #212529 calc(50% + 2px)
   );
   padding: 0.5rem;
+  cursor: default;
+}
+.doses,
+.dose,
+.date_time {
+  cursor: pointer;
 }
 
 .date span:first-child {
