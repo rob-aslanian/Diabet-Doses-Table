@@ -37,6 +37,7 @@ const funcs = {
     let canDelete =
       childCount > 1 ? '<button class="delete_dose">Delete</button>' : "";
     let el = "";
+
     insulins.forEach(insulin => {
       let sel = insulin == doseType ? "selected" : "";
       let disable =
@@ -76,11 +77,12 @@ const funcs = {
   },
   async getAllDocs(db, coll) {
     let docs = [];
-    await db
-      .collection(coll)
-      .orderBy("index", "asc")
-      .get()
-      .then(el => el.docs.forEach(doc => docs.push(doc.id)));
+    let order =
+      coll === "Doses"
+        ? db.collection(coll).orderBy("index", "asc")
+        : db.collection(coll);
+
+    await order.get().then(el => el.docs.forEach(doc => docs.push(doc.id)));
 
     return docs;
   }

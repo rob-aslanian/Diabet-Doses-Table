@@ -57,7 +57,6 @@ if (location.pathname !== "/") {
           childCount,
           insulins
         };
-
         Common.insertInputAndSelect($obj);
         document.querySelectorAll(".delete_dose").forEach(dose => {
           dose.addEventListener("click", deleteDose);
