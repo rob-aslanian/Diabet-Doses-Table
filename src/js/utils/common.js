@@ -32,7 +32,7 @@ const funcs = {
   },
   insertInputAndSelect(data) {
     let { childCount, doseField, doseValue, doseType, insulins } = data;
-    let isValue = doseValue ? doseValue : 0;
+    let isValue = doseValue ? Number(doseValue) : 0;
     let showAll = childCount > 1 ? "" : ' <option value="*">All</option>';
     let canDelete =
       childCount > 1 ? '<button class="delete_dose">Delete</button>' : "";

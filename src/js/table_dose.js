@@ -48,7 +48,7 @@ if (location.pathname !== "/") {
     function handlerUpdateDose(e) {
       let doseField = e.target,
         doseType = e.target.getAttribute("data-type"),
-        doseValue = Number(doseField.textContent.trim());
+        doseValue = doseField.textContent;
 
       if (doseField.nodeName === "SPAN" && doseField.className === "ins_type") {
         let childCount = doseField.parentNode.children.length;
@@ -178,7 +178,7 @@ if (location.pathname !== "/") {
 
     function addDoseTime(e) {
       let docTime = changeDoseTime(e, "00:00");
-      if (docTime) {
+      if (docTime && !docs.includes(docTime)) {
         this.textContent = docTime;
       }
       return docTime;
@@ -216,8 +216,8 @@ if (location.pathname !== "/") {
         newTime = value;
       } else if (regExpNum.test(value) && enterBtn) {
         newTime = `${value}:00`;
-      } else if (escBtn) {
-        e.target.textContent = oldTime;
+      } else if (escBtn && e.target.parentNode) {
+        e.target.parentNode.textContent = oldTime;
       }
 
       e.target.parentNode && newTime !== undefined
@@ -362,6 +362,7 @@ if (location.pathname !== "/") {
         docTime,
         fieldValue
       };
+
       fieldValue = checkDoseValue($obj);
 
       if (fieldValue) {
@@ -574,9 +575,32 @@ if (location.pathname !== "/") {
     function removeInsulin(e) {
       const selInsulin = e.target.dataset.insulin;
       if (confirm(`Do you want to delete ${selInsulin} ?`)) {
-        db.collection("Insulins")
-          .doc(selInsulin)
-          .delete();
+        let dosesRef = db.collection("Doses"),
+          insulinsRef = db.collection("Insulins");
+        docs.forEach(doc => {
+          dosesRef
+            .doc(doc)
+            .get()
+            .then(el => {
+              let data = el.data(),
+                docTime = el.id,
+                type =
+                  data.type === selInsulin || data.type.includes(selInsulin),
+                $type = data.type;
+              if (type) {
+                data[selInsulin] = firebase.firestore.FieldValue.delete();
+                if (Common.isArray($type)) {
+                  let index = $type.indexOf(selInsulin);
+                  $type.splice(index, 1);
+                  dosesRef.doc(docTime).update(data);
+                } else {
+                  dosesRef.doc(docTime).delete();
+                }
+              }
+              return;
+            });
+        });
+        insulinsRef.doc(selInsulin).delete();
         setTimeout(() => location.reload(), 1000);
       }
     }
