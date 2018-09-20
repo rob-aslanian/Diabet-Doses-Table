@@ -6,10 +6,9 @@ import "./table_dose";
 /**
  * Diabet Table Creater
  *
- * @author Robert Asllanyan
- * @version 4.0
+ * @author Robert Aslanyan
+ * @version 4.1
  *
- * Last Modify 06/6/2018
  */
 const printBtn = document.querySelector(".print"); // Button from printing
 

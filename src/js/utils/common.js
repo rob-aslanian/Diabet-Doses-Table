@@ -42,7 +42,9 @@ const funcs = {
       let sel = insulin == doseType ? "selected" : "";
       let disable =
         childCount === 0 ? "" : insulin == doseType ? "" : "disabled";
-      el += `<option value="${insulin}" ${sel} ${disable} >${insulin}</option>`;
+      el += `<option value="${insulin}" ${sel} ${disable} >${this.capitalize(
+        insulin
+      )}</option>`;
     });
     doseField.innerHTML = `<div class="inp_group">
       <input type="text" class="ins_field" value="${isValue}">
@@ -74,6 +76,25 @@ const funcs = {
         .querySelectorAll("select")
         .forEach(sel => sel.classList.remove("hide"));
     };
+  },
+  capitalize(str) {
+    let firstLetter = str[0].toUpperCase(),
+      $str = str.slice(1);
+    return firstLetter + $str;
+  },
+  handler(text, error = true, durotation = 2500) {
+    const hasMessage =
+      document.querySelector(".error") || document.querySelector("success");
+    let content = hasMessage ? null : document.createElement("div");
+
+    console.log(this);
+    if (content) {
+      content.className = error ? "error" : "success";
+      content.textContent = text;
+      this.appendChild(content);
+
+      setTimeout(() => content.remove(), durotation);
+    }
   },
   async getAllDocs(db, coll) {
     let docs = [];

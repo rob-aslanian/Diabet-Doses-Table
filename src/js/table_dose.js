@@ -26,9 +26,11 @@ if (location.pathname !== "/") {
     const table = document.querySelector("table");
     const addNewBtn = document.querySelector("#new_column");
     const insulins = await Common.getAllDocs(db, "Insulins");
+    const addInsulinForm = document.querySelector("#insulin_add_form");
 
     table.addEventListener("click", handlerUpdateDose);
     addNewBtn.addEventListener("click", addNewColumn);
+    addInsulinForm.addEventListener("submit", addInsulin);
 
     docs.forEach(async doc => {
       let doses = await getDoses(doc);
@@ -78,7 +80,7 @@ if (location.pathname !== "/") {
       }
     }
 
-    function addNewColumn(e) {
+    function addNewColumn() {
       let th = document.createElement("th"),
         doseFields = document.querySelectorAll(".sugars_res");
       th.className = "inj_time";
@@ -183,7 +185,8 @@ if (location.pathname !== "/") {
     }
     function checkDoseValue(obj) {
       let regExp = /^\d{1,2}$/,
-        regExpFull = /^\d{1,2}\s+\d{1,2}$/,
+        str = insulins.reduce($str => ($str += "\\d{1,2}(\\s+)"), ""),
+        regExpFull = new RegExp(`^${str}?$`),
         { enterBtn, docTime, escBtn, insType, fieldValue } = obj;
 
       if (
@@ -524,6 +527,58 @@ if (location.pathname !== "/") {
           }
           return obj;
         });
+    }
+
+    /** Insert all insulins which was in db to the page*/
+    (function() {
+      const list = document.querySelector("#insulins_list");
+      const fragment = document.createDocumentFragment();
+      insulins.forEach(insulin => {
+        let li = document.createElement("li");
+        li.className = "insulins_list_item";
+        li.dataset.insulin = insulin;
+        li.textContent = Common.capitalize(insulin);
+        li.addEventListener("click", removeInsulin);
+
+        fragment.appendChild(li);
+      });
+
+      list.appendChild(fragment);
+    })();
+
+    /** Add new insulin */
+    function addInsulin(e) {
+      e.preventDefault();
+      const inputValue = e.target.firstChild.nextElementSibling.value.toLowerCase();
+      if (insulins.includes(inputValue)) {
+        Common.handler.call(
+          e.target,
+          `Error! The ${inputValue} is almost exists`
+        );
+      } else {
+        db.collection("Insulins")
+          .doc(inputValue)
+          .set({})
+          .then(() => {
+            Common.handler.call(
+              e.target,
+              `${inputValue} was added successfully`,
+              false
+            );
+            return setTimeout(() => location.reload(), 1500);
+          });
+      }
+    }
+
+    /** Remove insulin */
+    function removeInsulin(e) {
+      const selInsulin = e.target.dataset.insulin;
+      if (confirm(`Do you want to delete ${selInsulin} ?`)) {
+        db.collection("Insulins")
+          .doc(selInsulin)
+          .delete();
+        setTimeout(() => location.reload(), 1000);
+      }
     }
   })();
 }

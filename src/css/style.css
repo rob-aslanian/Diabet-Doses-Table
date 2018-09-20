@@ -116,6 +116,7 @@ tr:nth-child(even) {
   padding: 1.5rem;
   border-radius: 3px;
   position: relative;
+  color: #fff;
 }
 .group {
   display: inline-flex;
@@ -124,6 +125,9 @@ tr:nth-child(even) {
 }
 #durotation {
   width: 25%;
+}
+#insulins_use {
+  margin: 0;
 }
 .ins_type {
   position: relative;
@@ -140,4 +144,25 @@ tr:nth-child(even) {
 }
 .inp_group select {
   margin-left: calc(-25%);
+}
+.error,
+.success {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+.error {
+  background: #dc3545;
+}
+.success {
+  background: #28a745;
+}
+.insulins_list_item {
+  cursor: pointer;
+  transition: 0.3s background;
+  padding: 0.35rem;
+}
+.insulins_list_item:hover {
+  background: #dc3545;
+  cursor: pointer;
 }

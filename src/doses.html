@@ -12,6 +12,7 @@
 <body>
     <div id="add_column">
         <button id="new_column">Add new column</button>
+        <button id="info" onclick="document.querySelector('.modal').style.display = 'flex' ">More Info</button>
         <button class="print">Print</button>
     </div>
     <table>
@@ -118,6 +119,18 @@
             </tr>
         </tbody>
     </table>
+
+    <div class="modal">
+        <div class="modal-content">
+            <h5 id="insulins_use">Insulins in use</h5>
+            <ol id="insulins_list"></ol>
+            <form id="insulin_add_form">
+                <input type="text" placeholder="apidra" maxlength="20">
+                <button type="submit">Add insulin</button>
+            </form>
+            <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
+        </div>
+    </div>
 
     <script src="../dist/js/bundle.js"></script>
 </body>
