@@ -10,9 +10,11 @@
 </head>
 
 <body>
-
-    <button id="info" onclick="document.querySelector('.modal').style.display = 'flex' ">More Info</button>
-    <button class="print">Print</button>
+    <div id="add_column">
+        <button id="new_column">Add new column</button>
+        <button id="info" onclick="document.querySelector('.modal').style.display = 'flex' ">More Info</button>
+        <button class="print">Print</button>
+    </div>
     <table>
         <thead>
             <tr class="doses_row">
@@ -117,7 +119,6 @@
             </tr>
         </tbody>
     </table>
-    <button id="new_column" title="Add new column">+</button>
 
     <div class="modal">
         <div class="modal-content">

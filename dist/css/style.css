@@ -1,77 +1,167 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,700);body{
-    font-size: 1.25rem;
-    font-family: 'Roboto', sans-serif;;
-    max-height: 100vh;
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700);body {
+  font-size: 1.25rem;
+  font-family: "Roboto", sans-serif;
+  max-height: 100vh;
 }
-table , th , td{
-    border:3px solid #000;
-    padding: 0.65rem;
+table,
+th,
+td {
+  border: 3px solid #000;
+  padding: 0.65rem 0;
+  position: relative;
 }
-table{
-    border-collapse: collapse;
-    width: 100%;
-    text-align: center;
-    margin-top: 0.25rem;
+hr {
+  position: relative;
+  height: 2px;
+  background: #000;
+  width: 100%;
+  z-index: -3;
 }
-table tr th:first-child{  cursor: pointer; }
+table {
+  position: relative;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+table thead {
+  background: #212529;
+  color: #fff;
+  cursor: pointer;
+}
+tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.05);
+}
 
 /** Classes **/
-.apidra , .lantus {
-    color:#ccc;
+.apidra,
+.lantus {
+  color: #ccc;
 }
-.apidra::after{content: 'A'; }
-.lantus::after{content: 'L';}
-
-.date{
-    width: 25%;
-    background-image: linear-gradient(
-        to top right,
-        #fff calc(50% - 2px),
-        #000 ,
-        #fff calc(50% + 2px)
-      );
+.apidra::after {
+  content: "A";
+}
+.lantus::after {
+  content: "L";
 }
 
-.date span:first-child{float: right;}
-.date span:last-child{float: left;}
-.line{clear: both;}
-
-.hide{
-    display: none;
+.add_row {
+  position: absolute;
+  background: #212529;
+  color: #fff;
+  font-size: 1.5rem;
+  border: unset;
+  margin-top: -14px;
+  outline: unset;
+}
+.btn_group {
+  margin-top: 25px;
 }
 
-.close{
-    position: absolute;
-    right: 0;
-    top: -10%;
-    cursor: pointer;
+.date {
+  width: 25%;
+  background-image: linear-gradient(
+    to top right,
+    #212529 calc(50% - 2px),
+    #fff,
+    #212529 calc(50% + 2px)
+  );
+  padding: 0.5rem;
+  cursor: default;
+}
+.doses,
+.dose,
+.date_time {
+  cursor: pointer;
+}
+
+.date span:first-child {
+  float: right;
+}
+.date span:last-child {
+  float: left;
+}
+.line {
+  clear: both;
+}
+
+.hide {
+  display: none;
+}
+
+.close {
+  position: absolute;
+  right: 0;
+  top: -10%;
+  cursor: pointer;
 }
 
 /** Modal */
-.modal{
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: rgba(11,11, 11, 0.5);
-    justify-content: center;
-    align-items: center;
-    display: none;
+.modal {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(11, 11, 11, 0.5);
+  justify-content: center;
+  align-items: center;
+  display: none;
 }
-.modal-content{
-    background: rgba(33 ,22,33 ,  0.35);
-    padding: 1.5rem;
-    border-radius: 3px;
-    position: relative;
+.modal-content {
+  background: rgba(33, 22, 33, 0.35);
+  padding: 1.5rem;
+  border-radius: 3px;
+  position: relative;
+  color: #fff;
 }
-.group{
-    display: inline-flex;
-    justify-content: center;
-    margin-top: 1rem;
+.group {
+  display: inline-flex;
+  justify-content: center;
+  margin-top: 1rem;
 }
-#durotation{
-    width: 25%;
+#durotation {
+  width: 25%;
+}
+#insulins_use {
+  margin: 0;
+}
+.ins_type {
+  position: relative;
+  display: block;
+  margin-bottom: 0.5rem;
+  height: 30px;
+}
+.ins_type::after {
+  content: attr(data-css);
+  position: absolute;
+}
+.inp_group {
+  display: inline-flex;
+}
+.inp_group select {
+  margin-left: calc(-25%);
+}
+.error,
+.success {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+.error {
+  background: #dc3545;
+}
+.success {
+  background: #28a745;
+}
+.insulins_list_item {
+  cursor: pointer;
+  transition: 0.3s background;
+  padding: 0.35rem;
+}
+.insulins_list_item:hover {
+  background: #dc3545;
+  cursor: pointer;
 }

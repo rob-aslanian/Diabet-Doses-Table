@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,52 +8,55 @@
     <link rel="stylesheet" href="../dist/css/style.css">
     <title>&rarr; Diabet Table &larr;</title>
 </head>
-<body>
-    <button class="save_btn" >Save Data</button>
-    <button class="load_btn">Load Data</button>
 
+<body>
+    <button class="save_btn">Save Data</button>
+    <button class="load_btn">Load Data</button>
+    <select name="langs" class="langs">
+        <option disabled>Languages</option>
+        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
+        <option value="ru" data-lang="ru" class="lang">Russian</option>
+        <option value="en" data-lang="en" class="lang">English</option>
+    </select>
+    <select name="sugar_types" id="sugar_convertor">
+        <option disabled>Blood Glucose Types </option>
+        <option value="mg" selected>mg/dL</option>
+        <option value="mmol">mmol/L</option>
+    </select>
     <table>
         <thead>
-            <tr>
-                <td class="date">
-                    <span>დრო</span>
+            <tr class="table_head">
+                <th class="date">
+                    <span class="time">დრო</span>
                     <div class="line"></div>
-                    <span>დღე</span>
-                </td>
-
-                <td>9:00</td>
-                <td>15:00</td>
-                <td>19:00</td>
-                <td>22:00</td>
-                <td>5:00</td>
+                    <span class="day">დღე</span>
+                </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody> </tbody>
 
-        </tbody>
     </table>
     <div class="modal">
         <div class="modal-content">
-            <form >
+            <form>
                 <div class="group">
                     <input type="date" id="date">
                     <input type="number" id="durotation" placeholder="10">
-                    <button class="set_date" >Submit</button>
+                    <button class="set_date">Submit</button>
                 </div>
-               
             </form>
-                <button class="close" 
-                onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
-            
+            <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
         </div>
     </div>
 
-    <button class="add_row">Add Row</button>
-
-    <button id="start_modal" onclick="document.querySelector('.modal').style.display = 'flex'">Set Date</button>
-
-    <button class="print">Print</button>
+    <button class="add_row" title="Add new row">+</button>
+    <div class="btn_group">
+        <button id="start_modal" onclick="document.querySelector('.modal').style.display = 'flex'">Set Date</button>
+        <button class="print">Print</button>
+        <button onclick="location.href = './doses.html'">Doses Table</button>
+    </div>
 
     <script src="../dist/js/bundle.js"></script>
 </body>
+
 </html>

@@ -12,7 +12,7 @@ import "./table_dose";
  */
 const printBtn = document.querySelector(".print"); // Button from printing
 
-if (location.pathname === "/") {
+if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   const addBtn = document.querySelector(".add_row"); // Button from adding new row
   const setBtn = document.querySelector(".set_date"); // Button from set date
   const modal = document.querySelector(".modal"); // Modal
@@ -121,11 +121,13 @@ if (location.pathname === "/") {
   }
   function createSpan(el, obj, value, type) {
     let keys = Object.keys(obj);
-    el.innerHTML = `<span>${value}</span> <br/>`;
+    el.innerHTML = `<span class="sugar_value">${value}</span> <br/>`;
     el.setAttribute("data-type", type);
     keys.forEach(key => {
       if (obj[key] !== 0) {
-        return (el.innerHTML += ` <span class="${key}">${obj[key]}</span>`);
+        return (el.innerHTML += ` <span class="dose_value" data-css="${key[0].toUpperCase()}">${
+          obj[key]
+        }</span>`);
       }
     });
   }
@@ -221,12 +223,9 @@ if (location.pathname === "/") {
    * @param {Event} e
    */
   function changeValue(e) {
-    let dose =
-      e.target.className == "dose" ? e.target : e.target.className !== "apidra";
+    let dose = e.target.className === "sugar_value";
 
-    if (dose.children !== undefined) {
-      return updateDoseValue(dose);
-    } else if (dose) {
+    if (dose) {
       return updateDoseValue(e.target);
     }
   }
