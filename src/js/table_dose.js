@@ -2,7 +2,7 @@ import db from "./utils/init";
 import firebase from "firebase/app";
 import Common from "./utils/common";
 
-if (location.pathname !== "/") {
+if (location.pathname.endsWith("doses.html")) {
   (async function() {
     const from = [
       60,
@@ -207,15 +207,20 @@ if (location.pathname !== "/") {
     function changeDoseTime(e, oldTime) {
       let newTime,
         value = e.target.value,
-        regExpFull = /^\d{1,2}:\d{2}$/,
+        regExpFull = /^\d{1,2}:[0-5]\d$/,
         regExpNum = /^\d{1,2}$/,
         enterBtn = e.which === 13,
         escBtn = e.which === 27;
 
-      if (regExpFull.test(value) && enterBtn) {
-        newTime = value;
-      } else if (regExpNum.test(value) && enterBtn) {
-        newTime = `${value}:00`;
+      if (enterBtn) {
+        if (regExpFull.test(value)) {
+          const hour = value.split(":")[0];
+          if (hour <= 23) {
+            newTime = value;
+          }
+        } else if (regExpNum.test(value) && value <= 23) {
+          newTime = `${value}:00`;
+        }
       } else if (escBtn && e.target.parentNode) {
         e.target.parentNode.textContent = oldTime;
       }
