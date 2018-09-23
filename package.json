@@ -8,7 +8,7 @@
     "ie >  9"
   ],
   "scripts": {
-    "dev": "webpack-dev-server --mode development   --host 192.168.0.102 --open",
+    "dev": "webpack-dev-server --mode development   --host 192.168.0.104 --open",
     "build": "webpack --mode production"
   },
   "keywords": [],

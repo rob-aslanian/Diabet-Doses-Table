@@ -1,24 +1,10 @@
-import db from "./utils/init";
 import firebase from "firebase/app";
 import Common from "./utils/common";
+import db from "./utils/init";
 
 if (location.pathname.endsWith("doses.html")) {
   (async function() {
-    const from = [
-      60,
-      100,
-      130,
-      160,
-      190,
-      220,
-      250,
-      280,
-      310,
-      340,
-      370,
-      400,
-      430
-    ];
+    const fm = [60, 100, 130, 160, 190, 220, 250, 280, 310, 340, 370, 400, 430];
     const to = [99, 129, 159, 189, 219, 249, 279, 309, 339, 369, 399, 429, 460];
     const docs = await Common.getAllDocs(db, "Doses");
     const dosesRow = document.querySelector(".doses_row");
@@ -59,6 +45,7 @@ if (location.pathname.endsWith("doses.html")) {
           childCount,
           insulins
         };
+
         Common.insertInputAndSelect($obj);
         document.querySelectorAll(".delete_dose").forEach(dose => {
           dose.addEventListener("click", deleteDose);
@@ -168,7 +155,7 @@ if (location.pathname.endsWith("doses.html")) {
           obj[insType] = changeDoseType(fieldValue, trTo, docTime, insType);
           obj["type"] = insType;
         }
-        obj["index"] = docs.length + 1;
+        obj["index"] = docs.length;
 
         docRef.doc(docTime).set(obj);
       } else if (fieldValue !== undefined) {
@@ -256,8 +243,8 @@ if (location.pathname.endsWith("doses.html")) {
           });
         }
       }
-
-      obj = from.map((el, index) => {
+      docTime;
+      obj = fm.map((el, index) => {
         return {
           from: el,
           to: to[index],
@@ -537,20 +524,81 @@ if (location.pathname.endsWith("doses.html")) {
 
     /** Insert all insulins which was in db to the page*/
     (function() {
-      const list = document.querySelector("#insulins_list");
-      const fragment = document.createDocumentFragment();
+      const list = document.querySelector("#insulins_list"),
+        row = document.querySelector(".row"),
+        fragment = document.createDocumentFragment();
       insulins.forEach(insulin => {
         let li = document.createElement("li");
         li.className = "insulins_list_item";
         li.dataset.insulin = insulin;
         li.textContent = Common.capitalize(insulin);
         li.addEventListener("click", removeInsulin);
-
+        77;
         fragment.appendChild(li);
       });
-
       list.appendChild(fragment);
+
+      docs.forEach(doc => {
+        const elem = `<div class="empty">
+          <div class="fill" draggable="true">${doc}</div>
+        </div>`;
+        row.innerHTML += elem;
+      });
     })();
+
+    /** Drag and drop , from sorting time */
+    const empties = document.querySelectorAll(".empty");
+    const fills = document.querySelectorAll(".fill");
+
+    empties.forEach(async empty => {
+      empty.addEventListener("dragover", dragOver);
+      empty.addEventListener("drop", drop);
+    });
+
+    fills.forEach((fill, idx) => {
+      fill.id = `index_${idx}`;
+      fill.addEventListener("dragstart", dragStart);
+      fill.addEventListener("dragend", e => (e.target.className = "fill"));
+    });
+
+    // Functions
+    function dragStart(e) {
+      e.dataTransfer.setData("text", e.target.id);
+      this.classList.add("hold");
+      setTimeout(() => this.classList.add("hide"));
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+    function drop(e) {
+      e.preventDefault();
+      const data = document.getElementById(e.dataTransfer.getData("text")),
+        srcParent = data.parentNode,
+        tgt = e.currentTarget.firstElementChild,
+        dosesRef = db.collection("Doses");
+
+      e.currentTarget.replaceChild(data, tgt);
+      srcParent.appendChild(tgt);
+
+      empties.forEach(empty => {
+        let value = empty.firstElementChild.textContent;
+        docs.sort((doc, idx) => {
+          return doc.indexOf(value) !== doc.indexOf(idx);
+        });
+      });
+
+      docs.forEach((doc, idx) => {
+        const docRef = dosesRef.doc(doc);
+        docRef.get().then(el => {
+          if (el.exists) {
+            const data = el.data();
+            data["index"] = idx;
+            docRef.update(data);
+          }
+        });
+      });
+    }
 
     /** Add new insulin */
     function addInsulin(e) {

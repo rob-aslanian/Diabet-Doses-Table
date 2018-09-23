@@ -7,7 +7,7 @@ import "./table_dose";
  * Diabet Table Creater
  *
  * @author Robert Aslanyan
- * @version 4.1
+ * @version 2.2
  *
  */
 const printBtn = document.querySelector(".print"); // Button from printing

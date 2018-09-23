@@ -87,7 +87,6 @@ const funcs = {
       document.querySelector(".error") || document.querySelector("success");
     let content = hasMessage ? null : document.createElement("div");
 
-    console.log(this);
     if (content) {
       content.className = error ? "error" : "success";
       content.textContent = text;
