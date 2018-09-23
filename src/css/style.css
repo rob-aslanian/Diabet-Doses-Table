@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700");
+
 body {
   font-size: 1.25rem;
   font-family: "Roboto", sans-serif;
@@ -30,11 +31,28 @@ table thead {
   color: #fff;
   cursor: pointer;
 }
+label {
+  font-size: 1rem;
+}
+h5 {
+  margin: 0;
+}
 tr:nth-child(even) {
-  background: #ccc; /*rgba(0, 0, 0, 0.05);*/
+  background: rgba(0, 0, 0, 0.05);
 }
 input {
   padding: 0.25rem;
+}
+button {
+  border: unset;
+  padding: 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #fff;
+}
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
 }
 
 /** Classes **/
@@ -75,7 +93,18 @@ input {
   flex-wrap: wrap;
   margin: 1rem 0;
 }
+.col_row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
 
+#doses_link {
+  color: #f0ad4e;
+  font-size: 1.2rem;
+  margin-left: 0.25rem;
+}
 .add_row,
 #new_column {
   position: absolute;
@@ -85,15 +114,35 @@ input {
   border: unset;
   outline: unset;
 }
-.add_row {
-  margin-top: -15px;
-}
 #new_column {
   top: 27px;
   right: 0;
 }
+.add_row {
+  margin-top: -15px;
+}
+
+.info_btn {
+  background: #5bc0de;
+}
 .btn_group {
-  margin-top: 25px;
+  display: inline-flex;
+}
+.load_btn,
+.save_btn {
+  border-radius: unset;
+}
+.save_btn {
+  background: #5cb85c;
+}
+.load_btn {
+  background: #337ab7;
+}
+.submit_btn {
+  background: #5cb85c;
+}
+.print {
+  background: #f0ad4e;
 }
 
 .date {
@@ -139,9 +188,11 @@ input {
   width: 35px;
   height: 35px;
   text-align: center;
-  line-height: 35px;
 }
-
+.info {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
 /** Modal */
 .modal {
   position: fixed;
@@ -162,6 +213,7 @@ input {
   border-radius: 3px;
   position: relative;
   color: #fff;
+  max-width: 50%;
 }
 .group {
   display: inline-flex;

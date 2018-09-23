@@ -2,12 +2,13 @@ import Common from "./utils/common";
 import DayDate from "./utils/date";
 import db from "./utils/init";
 import "./table_dose";
+import Langs from "./utils/languages.json";
 
 /**
  * Diabet Table Creater
  *
  * @author Robert Aslanyan
- * @version 2.2
+ * @version 2.3
  *
  */
 const printBtn = document.querySelector(".print"); // Button from printing
@@ -23,10 +24,12 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   const MAX = { mg: 460, mmol: 25.5 }; // Max value of sugar in blodd
   const langs = document.querySelector(".langs");
   const bgTypes = document.querySelector("#sugar_convertor");
+  const autoSave = document.querySelector("#auto_save");
 
   let date = new DayDate();
   date.getNow();
 
+  //****** Events ******//
   setBtn.addEventListener("click", setDate);
   addBtn.addEventListener("click", addRow);
 
@@ -35,6 +38,13 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
 
   langs.addEventListener("change", langChange);
   bgTypes.addEventListener("change", bgTypeChange);
+
+  autoSave.addEventListener("click", e => {
+    if (e.target.checked) {
+      return Common.setCookie("_autoSave", true, 1);
+    }
+    return Common.setCookie("_autoSave", false, 1);
+  });
 
   (async function() {
     let defaultLang = langs.options[langs.selectedIndex].getAttribute(
@@ -77,14 +87,19 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
 
     /** Set Type Value */
     Common.setCookie("_type", defaultType, 1);
+
+    /** Set Auto Save Value  */
+    Common.setCookie("_autoSave", autoSave.checked, 1);
   })();
+
+  //****** Functions ****** //
 
   /**
    * Calculate Insulin Doses and
    * set the values in the table
    *
    * @param {Number} num
-   * @param {Number} type
+   * @param {String} type
    */
   function calcDose(num, type) {
     let value = Number(this.firstChild.value) || Number(num),
@@ -116,6 +131,10 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         }
         value = bgType === "mg" ? Math.round(value) : value.toFixed(1);
         createSpan(this, result, value, bgType);
+      }
+
+      if (Boolean(Common.getCookie("_autoSave"))) {
+        return saveData();
       }
     });
   }
@@ -271,8 +290,8 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     let input = e.target,
       value = Number(input.value),
       index =
-        e.target.parentNode.getAttribute("data-time") || // Index of column
-        input.getAttribute("data-time"),
+        e.target.parentNode.getAttribute("data-time") ||
+        input.getAttribute("data-time"), // Index of column
       bgType = Common.getCookie("_type");
 
     if (e.which === 13 && (value >= MIN[bgType] && value <= MAX[bgType])) {
@@ -357,7 +376,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
       }
     });
     addBtn.setAttribute("disabled", "disabled");
-    document.querySelector("#start_modal").setAttribute("disabled", "disabled");
+    document.querySelector(".set_date").setAttribute("disabled", "disabled");
 
     /** Select the option , which was in local storage  */
     Array.from(bgTypes.options).forEach(option => {
@@ -379,16 +398,11 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     let selectedLang = this.options[this.selectedIndex].getAttribute(
         "data-lang"
       ),
-      langs = {
-        ge: { time: "დრო", day: "დღე" },
-        ru: { time: "Время", day: "День" },
-        en: { time: "Time", day: "Day" }
-      },
       time = document.querySelector(".time"),
       day = document.querySelector(".day");
 
     if (Common.getCookie("_lang")) {
-      let lan = langs[selectedLang];
+      let lan = Langs[selectedLang];
       time.textContent = lan.time;
       day.textContent = lan.day;
 

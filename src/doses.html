@@ -11,7 +11,7 @@
 
 <body>
 
-    <button id="info" onclick="document.querySelector('.modal').style.display = 'flex' ">More Info</button>
+    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex' ">Options</button>
     <button class="print">Print</button>
     <table>
         <thead>
@@ -127,7 +127,7 @@
             <ol id="insulins_list"></ol>
             <form id="insulin_add_form">
                 <input type="text" placeholder="apidra" maxlength="20">
-                <button type="submit">Add insulin</button>
+                <button type="submit" class="submit_btn">Add insulin</button>
             </form>
             <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
         </div>

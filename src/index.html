@@ -10,19 +10,13 @@
 </head>
 
 <body>
-    <button class="save_btn">Save Data</button>
-    <button class="load_btn">Load Data</button>
-    <select name="langs" class="langs">
-        <option disabled>Languages</option>
-        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
-        <option value="ru" data-lang="ru" class="lang">Russian</option>
-        <option value="en" data-lang="en" class="lang">English</option>
-    </select>
-    <select name="sugar_types" id="sugar_convertor">
-        <option disabled>Blood Glucose Types </option>
-        <option value="mg" selected>mg/dL</option>
-        <option value="mmol">mmol/L</option>
-    </select>
+
+    <div class="btn_group">
+        <button class="save_btn">Save Data</button>
+        <button class="load_btn">Load Data</button>
+    </div>
+    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex'">Options</button>
+    <button class="print">Print</button>
     <table>
         <thead>
             <tr class="table_head">
@@ -38,22 +32,51 @@
     </table>
     <div class="modal">
         <div class="modal-content">
+            <div class="row">
+                <h5>Doses table</h5>
+                <span class="info">Here you can: add doses, remove them, replace them; add time, also delete and change
+                    it; you can also add or remove the
+                    insulin you need. <b>Attention</b>: without consulting a doctor, do not perform these manipulations
+                    yourself, otherwise it can
+                    be detrimental to your health <a href="./doses.html" id="doses_link">Doses table</a></span>
+
+            </div>
+            <div class="col_row">
+                <div class="col">
+                    <h5>Languages</h5>
+                    <select name="langs" class="langs">
+                        <option disabled>Languages</option>
+                        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
+                        <option value="ru" data-lang="ru" class="lang">Russian</option>
+                        <option value="en" data-lang="en" class="lang">English</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <h5>Blood glucose type</h5>
+                    <select name="sugar_types" id="sugar_convertor">
+                        <option disabled>Blood Glucose Types </option>
+                        <option value="mg" selected>mg/dL</option>
+                        <option value="mmol">mmol/L</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <h5>Auto save data</h5>
+                    <input type="checkbox" id="auto_save">
+                    <label for="auto_save">Save data</label>
+                </div>
+            </div>
             <form>
+                <h5>Set date and count of day</h5>
                 <div class="group">
                     <input type="date" id="date">
                     <input type="number" id="durotation" placeholder="10">
-                    <button class="set_date">Submit</button>
+                    <button class="set_date submit_btn">Submit</button>
                 </div>
             </form>
             <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
         </div>
     </div>
     <button class="add_row" title="Add new row">+</button>
-    <div class="btn_group">
-        <button id="start_modal" onclick="document.querySelector('.modal').style.display = 'flex'">Set Date</button>
-        <button class="print">Print</button>
-        <button onclick="location.href = './doses.html'">Doses Table</button>
-    </div>
 
     <script src="../dist/js/bundle.js"></script>
 </body>

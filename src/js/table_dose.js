@@ -152,9 +152,11 @@ if (location.pathname.endsWith("doses.html")) {
             type: insType,
             docTime
           });
+
           obj[insType] = changeDoseType(fieldValue, trTo, docTime, insType);
           obj["type"] = insType;
         }
+
         obj["index"] = docs.length;
 
         docRef.doc(docTime).set(obj);
@@ -243,7 +245,6 @@ if (location.pathname.endsWith("doses.html")) {
           });
         }
       }
-      docTime;
       obj = fm.map((el, index) => {
         return {
           from: el,
