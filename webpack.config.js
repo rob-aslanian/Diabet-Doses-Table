@@ -39,7 +39,6 @@ const conf = {
     ]
   },
   devServer: {
-    port: 9001,
     publicPath: "/dist/",
     contentBase: path.resolve(__dirname, "src") // Enter point for webpack-dev-server
   },

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 
 <head>
     <meta charset="UTF-8">
@@ -11,15 +11,15 @@
 
 <body>
 
-    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex' ">Options</button>
-    <button class="print">Print</button>
+    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex' ">პარამეტრები</button>
+    <button class="print">დაბეჭვდა</button>
     <table>
         <thead>
             <tr class="doses_row">
                 <th class="date">
-                    <span class="time">Time</span>
+                    <span class="time">დრო</span>
                     <div class="line"></div>
-                    <span class="sugars">Sugars</span>
+                    <span class="sugars">შაქრები</span>
                 </th>
             </tr>
         </thead>
@@ -121,13 +121,13 @@
 
     <div class="modal">
         <div class="modal-content">
-            <h5 id="sort_time">Sort time</h5>
+            <h5 class="sort_time_head">დროის დახარისხება</h5>
             <div class="row"></div>
-            <h5 id="insulins_use">Insulins in use</h5>
+            <h5 class="insulins_use_head">გამოიყენებადი ინსულინები</h5>
             <ol id="insulins_list"></ol>
             <form id="insulin_add_form">
                 <input type="text" placeholder="apidra" maxlength="20">
-                <button type="submit" class="submit_btn">Add insulin</button>
+                <button type="submit" class="addInsulin_btn">ინსულინის დამატება</button>
             </form>
             <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
         </div>

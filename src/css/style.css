@@ -100,7 +100,7 @@ button:disabled {
   margin: 1rem 0;
 }
 
-#doses_link {
+.doses_link {
   color: #f0ad4e;
   font-size: 1.2rem;
   margin-left: 0.25rem;
@@ -138,7 +138,8 @@ button:disabled {
 .load_btn {
   background: #337ab7;
 }
-.submit_btn {
+.submit_btn,
+.addInsulin_btn {
   background: #5cb85c;
 }
 .print {
@@ -179,7 +180,7 @@ button:disabled {
 .close {
   position: absolute;
   right: 0;
-  top: -5%;
+  top: 0;
   cursor: pointer;
   background: #212529;
   border: unset;

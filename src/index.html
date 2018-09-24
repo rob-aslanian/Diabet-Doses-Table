@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 
 <head>
     <meta charset="UTF-8">
@@ -12,11 +12,11 @@
 <body>
 
     <div class="btn_group">
-        <button class="save_btn">Save Data</button>
-        <button class="load_btn">Load Data</button>
+        <button class="save_btn">მონაცემების შენახვა</button>
+        <button class="load_btn">ჩამოტვირთეთ მონაცემები</button>
     </div>
-    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex'">Options</button>
-    <button class="print">Print</button>
+    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex'">პარამეტრები</button>
+    <button class="print">დაბეჭვდა</button>
     <table>
         <thead>
             <tr class="table_head">
@@ -33,26 +33,28 @@
     <div class="modal">
         <div class="modal-content">
             <div class="row">
-                <h5>Doses table</h5>
-                <span class="info">Here you can: add doses, remove them, replace them; add time, also delete and change
-                    it; you can also add or remove the
-                    insulin you need. <b>Attention</b>: without consulting a doctor, do not perform these manipulations
-                    yourself, otherwise it can
-                    be detrimental to your health <a href="./doses.html" id="doses_link">Doses table</a></span>
-
+                <h5 class="doses_table_head">ინექციების ცხრილი</h5>
+                <span>
+                    <span class="info">აქ შეგიძლიათ: დაამატოთ დოზები, წაშალოთ ისინი, შეცვალოთ ისინი; დაამატოთ დრო,
+                        წაშალოთ და შეცვალეთ იგი; თქვენ ასევე
+                        შეგიძლიათ დაამატოთ ან წაშალოთ ინსულინი , რომელოს ტქვენ გჭირდებათ. ყურადღება: ექიმთან
+                        კონსულტაციის გარეშე, არ შეასრულოთ
+                        ეს მანიპულაციები, წინააღმდეგ შემთხვევაში შეიძლება ზიანი მიაყენოს თქვენს ჯანმრთელობას </span>
+                    <a href="./doses.html" class="doses_link">დოზები</a>
+                </span>
             </div>
             <div class="col_row">
                 <div class="col">
-                    <h5>Languages</h5>
+                    <h5 class="languages_head">ენები</h5>
                     <select name="langs" class="langs">
                         <option disabled>Languages</option>
-                        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
+                        <option value="ka" data-lang="ka" class="lang" selected>Georgian</option>
                         <option value="ru" data-lang="ru" class="lang">Russian</option>
                         <option value="en" data-lang="en" class="lang">English</option>
                     </select>
                 </div>
                 <div class="col">
-                    <h5>Blood glucose type</h5>
+                    <h5 class="blood_type_head">გლუკოზის ანალიზის ტიპი</h5>
                     <select name="sugar_types" id="sugar_convertor">
                         <option disabled>Blood Glucose Types </option>
                         <option value="mg" selected>mg/dL</option>
@@ -60,17 +62,17 @@
                     </select>
                 </div>
                 <div class="col">
-                    <h5>Auto save data</h5>
+                    <h5 class="auto_save_head">ავტომატური მონაცემების შენახვა</h5>
                     <input type="checkbox" id="auto_save">
-                    <label for="auto_save">Save data</label>
+                    <label for="auto_save" class="auto_save_label">ავტომატური შენახვა</label>
                 </div>
             </div>
             <form>
-                <h5>Set date and count of day</h5>
+                <h5 class="set_date_head">მიუთითეთ თარიღი და დღეების რაოდენობა</h5>
                 <div class="group">
                     <input type="date" id="date">
                     <input type="number" id="durotation" placeholder="10">
-                    <button class="set_date submit_btn">Submit</button>
+                    <button class="set_date submit_btn">გაგზავნა</button>
                 </div>
             </form>
             <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
