@@ -1,14 +1,74 @@
 {
-  "ge": {
+  "ka": {
+    "alias": "ქართული",
     "time": "დრო",
-    "day": "დღე"
+    "day": "დღე",
+    "sugars": "შაქრები",
+    "doses_table_head": "ინექციების ცხრილი",
+    "languages_head": "ენები",
+    "blood_type_head": "გლუკოზის ანალიზის ტიპი",
+    "auto_save_head": "ავტომატური მონაცემების შენახვა",
+    "set_date_head": "მიუთითეთ თარიღი და დღეების რაოდენობა",
+    "sort_time_head": "დროის დახარისხება",
+    "insulins_use_head": "გამოიყენებადი ინსულინები ",
+    "auto_save_label": "ავტომატური შენახვა",
+    "doses_link": "დოზები",
+    "info": "აქ შეგიძლიათ: დაამატოთ დოზები, წაშალოთ ისინი, შეცვალოთ ისინი; დაამატოთ დრო, წაშალოთ და შეცვალეთ იგი; თქვენ ასევე შეგიძლიათ დაამატოთ ან წაშალოთ ინსულინი , რომელოს ტქვენ  გჭირდებათ. ყურადღება: ექიმთან კონსულტაციის გარეშე, არ შეასრულოთ ეს მანიპულაციები, წინააღმდეგ შემთხვევაში შეიძლება ზიანი მიაყენოს თქვენს ჯანმრთელობას",
+    "buttons": {
+      "save_btn": "მონაცემების შენახვა",
+      "load_btn": "ჩამოტვირთეთ მონაცემები",
+      "info_btn": "პარამეტრები",
+      "print": "დაბეჭვდა",
+      "submit_btn": "გაგზავნა",
+      "addInsulin_btn": "ინსულინის დამატება"
+    }
   },
   "ru": {
+    "alias": "Русский",
     "time": "Время",
-    "day": "День"
+    "day": "День",
+    "sugars": "Сахара",
+    "doses_table_head": "Таблица доз",
+    "languages_head": "Языки",
+    "blood_type_head": "Тип анализа глюкозы крови",
+    "auto_save_head": "Автоматическое сохранение данных",
+    "set_date_head": "Укажите дату и количество дней",
+    "sort_time_head": "Сортировка времени",
+    "insulins_use_head": "Используемые инсулины",
+    "auto_save_label": "Автосохранение",
+    "doses_link": "Дозы",
+    "info": "Здесь вы можете: добавлять дозы, удалять их, заменять; добавить время, а также удалить и изменить его; вы также можете добавить или удалить необходимый вам инсулин. Внимание: не консультируясь с врачом, не выполняйте эти манипуляции самостоятельно, иначе это может нанести ущерб вашему здоровью",
+    "buttons": {
+      "save_btn": "Сохранить данные",
+      "load_btn": "Загрузить данные",
+      "info_btn": "Опции",
+      "print": "Распечатать",
+      "submit_btn": "Отправить",
+      "addInsulin_btn": "Добавить инсулин"
+    }
   },
   "en": {
+    "alias": "English",
     "time": "Time",
-    "day": "Day"
+    "day": "Day",
+    "sugars": "Sugars",
+    "doses_table_head": "Doses table",
+    "languages_head": "Languages",
+    "blood_type_head": "Blood glucose type",
+    "auto_save_head": "Auto save data",
+    "set_date_head": "Set date and count of day",
+    "sort_time_head": "Sort a time",
+    "insulins_use_head": "Insulins in use",
+    "auto_save_label": "Save data",
+    "doses_link": "Doses",
+    "info": "Here you can: add doses, remove them, replace them; add time, also delete and change it; you can also add or remove the insulin you need. Attention: without consulting a doctor, do not perform these manipulations yourself, otherwise it can be detrimental to your health ",
+    "buttons": {
+      "save_btn": "Save data",
+      "load_btn": "Load data",
+      "info_btn": "Options",
+      "print": "Print",
+      "submit_btn": "Submit",
+      "addInsulin_btn": "Add insulin"
+    }
   }
 }

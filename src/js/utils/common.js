@@ -1,3 +1,5 @@
+import Langs from "./languages.json";
+
 const funcs = {
   setCookie(cname, cvalue, exdays) {
     var d = new Date();
@@ -94,6 +96,33 @@ const funcs = {
 
       setTimeout(() => content.remove(), durotation);
     }
+  },
+  translate(selectedLang) {
+    const selLang = Langs[selectedLang || this.getCookie("_lang")],
+      objKeys = Object.keys(selLang);
+
+    if (this.getCookie("_lang")) {
+      objKeys.forEach(key => {
+        let buttons = key === "buttons";
+        if (buttons) {
+          let btns = selLang["buttons"],
+            btnsClass = Object.keys(btns);
+          btnsClass.forEach(btnClass => {
+            let toTranslateBtn = document.querySelector(`button.${btnClass}`);
+            if (toTranslateBtn) {
+              toTranslateBtn.textContent = btns[btnClass];
+            }
+          });
+        } else if (key !== "alias") {
+          let toTranslate = document.querySelector(`.${key}`);
+          if (toTranslate) {
+            toTranslate.innerHTML = selLang[key];
+          }
+        }
+      });
+    }
+    return (document.querySelector("html").lang =
+      selectedLang || this.getCookie("_lang"));
   },
   async getAllDocs(db, coll) {
     let docs = [];

@@ -3,6 +3,9 @@ import Common from "./utils/common";
 import db from "./utils/init";
 
 if (location.pathname.endsWith("doses.html")) {
+  /** Translate page , by cookie value  */
+  Common.translate();
+
   (async function() {
     const fm = [60, 100, 130, 160, 190, 220, 250, 280, 310, 340, 370, 400, 430];
     const to = [99, 129, 159, 189, 219, 249, 279, 309, 339, 369, 399, 429, 460];

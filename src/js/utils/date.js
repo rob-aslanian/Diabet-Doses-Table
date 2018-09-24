@@ -30,7 +30,7 @@ class GetDate {
     this.setDate(nextDay);
 
     let day = this.sDate.getDate(),
-      month = MONTH[lang || "ge"][this.sDate.getMonth()];
+      month = MONTH[lang || "ka"][this.sDate.getMonth()];
 
     this.sDate = `${day} ${month}`;
 

@@ -50,9 +50,10 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     let defaultLang = langs.options[langs.selectedIndex].getAttribute(
         "data-lang"
       ),
-      docTimes = await Common.getAllDocs(db, "Doses");
-    let defaultType = bgTypes.options[bgTypes.selectedIndex].value;
-    let fr = document.createDocumentFragment();
+      docTimes = await Common.getAllDocs(db, "Doses"),
+      defaultType = bgTypes.options[bgTypes.selectedIndex].value,
+      cookieLang = Common.getCookie("_lang"),
+      fr = document.createDocumentFragment();
 
     docTimes.forEach((docTime, idx) => {
       let th = document.createElement("th");
@@ -83,7 +84,19 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     }
 
     /** Set Language Value  */
-    Common.setCookie("_lang", defaultLang, 1);
+    if (!cookieLang) {
+      Common.setCookie("_lang", defaultLang, 1);
+    } else {
+      Array.from(langs.options).forEach(option => {
+        option.dataset.lang === cookieLang
+          ? option.setAttribute("selected", "selected")
+          : option.removeAttribute("selected");
+      });
+
+      return langChange.call(langs);
+    }
+
+    document.querySelector("html").lang = cookieLang || defaultLang;
 
     /** Set Type Value */
     Common.setCookie("_type", defaultType, 1);
@@ -395,21 +408,12 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
 
   /** Language Change  */
   function langChange() {
-    let selectedLang = this.options[this.selectedIndex].getAttribute(
-        "data-lang"
-      ),
-      time = document.querySelector(".time"),
-      day = document.querySelector(".day");
+    let selectedLang = this.options[this.selectedIndex].dataset.lang;
 
-    if (Common.getCookie("_lang")) {
-      let lan = Langs[selectedLang];
-      time.textContent = lan.time;
-      day.textContent = lan.day;
+    Common.translate(selectedLang);
+    Common.setCookie("_lang", selectedLang, 1);
 
-      Common.setCookie("_lang", selectedLang, 1);
-
-      return date.changeLang();
-    }
+    return date.changeLang();
   }
 
   /** Blood Glucose Type Change*/
