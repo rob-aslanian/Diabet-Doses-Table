@@ -607,24 +607,28 @@ if (location.pathname.endsWith("doses.html")) {
     /** Add new insulin */
     function addInsulin(e) {
       e.preventDefault();
+
       const inputValue = e.target.firstChild.nextElementSibling.value.toLowerCase();
-      if (insulins.includes(inputValue)) {
-        Common.handler.call(
-          e.target,
-          `Error! The ${inputValue} is almost exists`
-        );
-      } else {
-        db.collection("Insulins")
-          .doc(inputValue)
-          .set({})
-          .then(() => {
-            Common.handler.call(
-              e.target,
-              `${inputValue} was added successfully`,
-              false
-            );
-            return setTimeout(() => location.reload(), 1500);
-          });
+
+      if (inputValue) {
+        if (insulins.includes(inputValue)) {
+          Common.handler.call(
+            e.target,
+            `Error! The ${inputValue} is almost exists`
+          );
+        } else {
+          db.collection("Insulins")
+            .doc(inputValue)
+            .set({})
+            .then(() => {
+              Common.handler.call(
+                e.target,
+                `${inputValue} was added successfully`,
+                false
+              );
+              return setTimeout(() => location.reload(), 1500);
+            });
+        }
       }
     }
 

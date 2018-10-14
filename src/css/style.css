@@ -55,6 +55,26 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/** Id **/
+#durotation {
+  width: 25%;
+}
+#insulins_use,
+#sort_time {
+  margin: 0;
+}
+#insulin_add_form {
+  display: flex;
+  justify-content: center;
+}
+#insulin_add_form > input {
+  flex-basis: 70%;
+}
+#new_column {
+  top: 27px;
+  right: 0;
+}
+
 /** Classes **/
 .dose_value {
   color: #ccc;
@@ -81,6 +101,11 @@ button:disabled {
   font-size: 1.25rem;
   text-align: center;
   line-height: 60px;
+  transition: 0.35s all;
+}
+.fill:hover {
+  background: #dc3545;
+  transform: scale(1.15);
 }
 
 .hold {
@@ -114,10 +139,7 @@ button:disabled {
   border: unset;
   outline: unset;
 }
-#new_column {
-  top: 27px;
-  right: 0;
-}
+
 .add_row {
   margin-top: -15px;
 }
@@ -207,6 +229,7 @@ button:disabled {
   justify-content: center;
   align-items: center;
   display: none;
+  z-index: 1;
 }
 .modal-content {
   background: rgba(51, 51, 51, 0.75);
@@ -220,20 +243,6 @@ button:disabled {
   display: inline-flex;
   justify-content: center;
   margin-top: 1rem;
-}
-#durotation {
-  width: 25%;
-}
-#insulins_use,
-#sort_time {
-  margin: 0;
-}
-#insulin_add_form {
-  display: flex;
-  justify-content: center;
-}
-#insulin_add_form > input {
-  flex-basis: 70%;
 }
 .ins_type {
   position: relative;
@@ -257,10 +266,13 @@ button:disabled {
   margin: 0.5rem 0;
   text-align: center;
 }
-.error {
+.error,
+.delete_dose {
+  color: #fff;
   background: #dc3545;
 }
 .success {
+  color: #fff;
   background: #28a745;
 }
 .insulins_list_item {
@@ -271,4 +283,12 @@ button:disabled {
 .insulins_list_item:hover {
   background: #dc3545;
   cursor: pointer;
+}
+.warning {
+  background: #feefb3;
+  color: #9f6000;
+}
+.warning_link {
+  color: tomato;
+  font-size: 1.5rem;
 }

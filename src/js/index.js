@@ -1,14 +1,12 @@
 import Common from "./utils/common";
 import DayDate from "./utils/date";
-import db from "./utils/init";
-import "./table_dose";
-import Langs from "./utils/languages.json";
+import "./tableDoses";
 
 /**
- * Diabet Table Creater
+ * Diabet Doses Table
  *
  * @author Robert Aslanyan
- * @version 2.3
+ * @version 3.0
  *
  */
 const printBtn = document.querySelector(".print"); // Button from printing
@@ -22,23 +20,24 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   const loadBtn = document.querySelector(".load_btn"); // Button from load data
   const MIN = { mg: 60, mmol: 3.3 }; // Min value of sugar in blood
   const MAX = { mg: 460, mmol: 25.5 }; // Max value of sugar in blodd
-  const langs = document.querySelector(".langs");
-  const bgTypes = document.querySelector("#sugar_convertor");
-  const autoSave = document.querySelector("#auto_save");
+  const langs = document.querySelector(".langs"); // Languages (select)
+  const bgTypes = document.querySelector("#sugar_convertor"); // Sugar converter (select)
+  const autoSave = document.querySelector("#auto_save"); // Auto save (checkbox)
 
   let date = new DayDate();
   date.getNow();
 
   //****** Events ******//
-  setBtn.addEventListener("click", setDate);
-  addBtn.addEventListener("click", addRow);
+  setBtn.addEventListener("click", setDate); // Set date
+  addBtn.addEventListener("click", addRow); // Add new row
 
-  saveBtn.addEventListener("click", saveData);
-  loadBtn.addEventListener("click", loadData);
+  saveBtn.addEventListener("click", saveData); // Save data to local storage
+  loadBtn.addEventListener("click", loadData); // Load data from local storage
 
-  langs.addEventListener("change", langChange);
-  bgTypes.addEventListener("change", bgTypeChange);
+  langs.addEventListener("change", langChange); // Change languages
+  bgTypes.addEventListener("change", bgTypeChange); // Bloog glucose convertor
 
+  /** Set Cookie by auto save checkbox value */
   autoSave.addEventListener("click", e => {
     if (e.target.checked) {
       return Common.setCookie("_autoSave", true, 1);
@@ -46,13 +45,22 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     return Common.setCookie("_autoSave", false, 1);
   });
 
-  (async function() {
+  /** Do this after load  */
+  (function() {
+    if (
+      !Common.lsGet("doses") ||
+      Object.keys(Common.lsGet("doses")).length === 0
+    ) {
+      return Common.createModal("warning");
+    }
+
     let defaultLang = langs.options[langs.selectedIndex].getAttribute(
         "data-lang"
       ),
-      docTimes = await Common.getAllDocs(db, "Doses"),
+      docTimes = Common.lsGet("times"),
       defaultType = bgTypes.options[bgTypes.selectedIndex].value,
       cookieLang = Common.getCookie("_lang"),
+      cookieAutoSave = Common.getCookie("_autoSave"),
       fr = document.createDocumentFragment();
 
     docTimes.forEach((docTime, idx) => {
@@ -93,7 +101,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
           : option.removeAttribute("selected");
       });
 
-      return langChange.call(langs);
+      langChange.call(langs);
     }
 
     document.querySelector("html").lang = cookieLang || defaultLang;
@@ -102,7 +110,13 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     Common.setCookie("_type", defaultType, 1);
 
     /** Set Auto Save Value  */
-    Common.setCookie("_autoSave", autoSave.checked, 1);
+    if (!cookieAutoSave) {
+      Common.setCookie("_autoSave", autoSave.checked, 1);
+    } else {
+      cookieAutoSave == "true"
+        ? autoSave.setAttribute("checked", "checked")
+        : autoSave.removeAttribute("checked");
+    }
   })();
 
   //****** Functions ****** //
@@ -114,45 +128,72 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
    * @param {Number} num
    * @param {String} type
    */
-  function calcDose(num, type) {
+  function calcDose(num, time) {
     let value = Number(this.firstChild.value) || Number(num),
-      docRef = db.collection("Doses").doc(type),
-      bgType = Common.getCookie("_type");
+      bgType = Common.getCookie("_type"),
+      doses = Common.lsGet("doses")[time],
+      result = {};
 
-    docRef.get().then(el => {
-      if (el && el.exists) {
-        let data = el.data(),
-          type = data["type"],
-          result = {};
-
-        if (data[type] !== undefined) {
-          data[type].forEach($data => {
-            if (createDoseObj($data, value) !== undefined) {
-              result[type] = createDoseObj($data, value);
-            }
-          });
-        } else {
-          if (Common.isArray(type)) {
-            type.forEach(tp => {
-              data[tp].forEach($data => {
-                if (createDoseObj($data, value) !== undefined) {
-                  result[tp] = createDoseObj($data, value);
-                }
-              });
-            });
+    Object.keys(doses).forEach(type => {
+      if (doses[type] !== undefined) {
+        doses[type].forEach(dose => {
+          if (createDoseObj(dose, value) !== undefined) {
+            result[type] = createDoseObj(dose, value);
           }
-        }
-        value = bgType === "mg" ? Math.round(value) : value.toFixed(1);
-        createSpan(this, result, value, bgType);
+        });
       }
+      value = bgType === "mg" ? Math.round(value) : Number(value).toFixed(1);
+      createSpan(this, result, value, bgType);
 
-      if (Boolean(Common.getCookie("_autoSave"))) {
+      if (Common.getCookie("_autoSave") == "true") {
         return saveData();
       }
     });
+
+    // docRef.get().then(el => {
+    //   if (el && el.exists) {
+    //     let data = el.data(),
+    //       type = data["type"],
+    //       result = {};
+
+    //     if (data[type] !== undefined) {
+    //       data[type].forEach($data => {
+    //         if (createDoseObj($data, value) !== undefined) {
+    //           result[type] = createDoseObj($data, value);
+    //         }
+    //       });
+    //     } else {
+    //       if (Common.isArray(type)) {
+    //         type.forEach(tp => {
+    //           data[tp].forEach($data => {
+    //             if (createDoseObj($data, value) !== undefined) {
+    //               result[tp] = createDoseObj($data, value);
+    //             }
+    //           });
+    //         });
+    //       }
+    //     }
+    //     value = bgType === "mg" ? Math.round(value) : value.toFixed(1);
+    //     createSpan(this, result, value, bgType);
+    //   }
+
+    // });
   }
+  /**
+   *  Create new span or spans ,
+   *  and insert it to the html
+   *
+   * @param {HTMLElement} el
+   * @param {Object} obj
+   * @param {Number|String} value
+   * @param {String} type
+   */
   function createSpan(el, obj, value, type) {
+    //  if(!value || value === 0){
+    //    el.innerHTML
+    //  }
     let keys = Object.keys(obj);
+
     el.innerHTML = `<span class="sugar_value">${value}</span> <br/>`;
     el.setAttribute("data-type", type);
     keys.forEach(key => {
@@ -164,6 +205,13 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     });
   }
 
+  /**
+   * Calculate value and return dose
+   *
+   * @param {Object} $data
+   * @param {String} value
+   * @return {Number}
+   */
   function createDoseObj($data, value) {
     let from = $data.from,
       to = $data.to,
@@ -178,10 +226,18 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     }
   }
 
+  /**
+   * Convert mg to mmol (blood glucose types)
+   * @param {Number} value
+   */
   function mgToMmol(value) {
     return (value / 18).toFixed(1);
   }
 
+  /**
+   * Convert mmol to mg  (blood glucose types)
+   * @param {Number} value
+   */
   function mmolToMg(value) {
     return Math.round(value * 18);
   }
@@ -231,9 +287,8 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     }
 
     tr.appendChild(fragment);
-    /**
-     * Delete Row
-     */
+
+    // Delete row
     tr.addEventListener("dblclick", e => {
       let tag = e.target.localName == "td";
       if (tag) return e.target.parentNode.remove();
@@ -262,6 +317,12 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     }
   }
 
+  /**
+   * Update dose and return input tag
+   * with new value
+   *
+   * @param {HTMLElement} el
+   */
   function updateDoseValue(el) {
     let value = Number(el.textContent || el.children[0].textContent),
       index =
@@ -269,6 +330,8 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         el.parentNode.getAttribute("data-index"),
       time =
         el.getAttribute("data-time") || el.parentNode.getAttribute("data-time");
+
+    console.log(el);
 
     return (el.innerHTML = `<input type="text" data-time="${time}" value=${value} data-index="${index}">`);
   }
@@ -295,6 +358,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
       modal.style.display = "none";
     }
   }
+
   /**
    * Add  value for the sugar value
    * @param {Event} e
@@ -317,7 +381,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   /**
    * Save Data to localStorage
    */
-  function saveData(e) {
+  function saveData() {
     let tr = document.querySelectorAll('tr[class="data"]'),
       result = [],
       type;
@@ -351,6 +415,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         day,
         sugars
       });
+
       localStorage.setItem("sugar", JSON.stringify(result));
       localStorage.setItem("times", JSON.stringify(docTimes));
       localStorage.setItem("type", type);
@@ -374,6 +439,12 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
     this.setAttribute("disabled", "disabled");
   }
 
+  /**
+   * Load sugars for local storage
+   *
+   * @param {String} day
+   * @param {Array} sugars
+   */
   function loadSuagrs(day, sugars) {
     const times = JSON.parse(localStorage.getItem("times"));
     const type = localStorage.getItem("type");
@@ -397,9 +468,11 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         option.setAttribute("selected", "selected");
       }
     });
+
     /** Set cookie by this type */
     Common.setCookie("_type", type, 1);
 
+    /** Calc dose by this sugars value */
     sugars.forEach((sugar, index) => {
       let time = doses[index].dataset.time;
       calcDose.call(doses[index], sugar, time, type);

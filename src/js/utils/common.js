@@ -32,6 +32,32 @@ const funcs = {
       value ? value : 0
     } "/>`;
   },
+  insertInputWithSelect(elem, value, insulin) {
+    let insulins = this.lsGet("insulins"),
+      isValue = Number(value) || 0,
+      el = null,
+      canDelete =
+        insulin !== undefined
+          ? `<button class="delete_dose" data-type="${insulin}">Delete</button>`
+          : "";
+
+    insulins.forEach($insulin => {
+      let isSelected = insulin === $insulin ? "selected" : "";
+
+      return (el += `<option value=${$insulin} ${isSelected}>${this.capitalize(
+        $insulin
+      )}</option>`);
+    });
+
+    return (elem.innerHTML = `<div class="inp_group">
+      <input type="text" class="ins_value_field" value="${isValue}">
+        <select name="insulins_type" multiple size="2">
+          <option value="insulins" disabled>Insulins</option>
+          ${el}
+        </select>
+        ${canDelete}
+    </div>`);
+  },
   insertInputAndSelect(data) {
     let { childCount, doseField, doseValue, doseType, insulins } = data;
     let isValue = doseValue ? Number(doseValue) : 0;
@@ -92,16 +118,28 @@ const funcs = {
     if (content) {
       content.className = error ? "error" : "success";
       content.textContent = text;
-      this.appendChild(content);
+
+      this.parentNode.insertBefore(content, this.nextSibling);
 
       setTimeout(() => content.remove(), durotation);
     }
   },
+  createModal(type) {
+    const el = `<div class="modal" style="display:flex">
+        <div class="modal-content warning">
+            <h1 class="${type}_head"></h1>
+            <p class="${type}_text"></p>
+            <a href="./doses.html" class="${type}_link"></a>
+        </div >
+    </div >`;
+    document.body.innerHTML += el;
+    return this.translate();
+  },
   translate(selectedLang) {
-    const selLang = Langs[selectedLang || this.getCookie("_lang")],
+    const selLang = Langs[selectedLang || this.getCookie("_lang") || "en"],
       objKeys = Object.keys(selLang);
 
-    if (this.getCookie("_lang")) {
+    if (this.isArray(objKeys) && objKeys.length !== 0) {
       objKeys.forEach(key => {
         let buttons = key === "buttons";
         if (buttons) {
@@ -113,7 +151,7 @@ const funcs = {
               toTranslateBtn.textContent = btns[btnClass];
             }
           });
-        } else if (key !== "alias") {
+        } else if (key !== "messages") {
           let toTranslate = document.querySelector(`.${key}`);
           if (toTranslate) {
             toTranslate.innerHTML = selLang[key];
@@ -134,6 +172,24 @@ const funcs = {
     await order.get().then(el => el.docs.forEach(doc => docs.push(doc.id)));
 
     return docs;
+  },
+  lsGet(from) {
+    return JSON.parse(localStorage.getItem(from));
+  },
+  lsSet(to, item) {
+    return localStorage.setItem(to, JSON.stringify(item));
+  },
+  once(fn, context) {
+    let result;
+
+    return function(...args) {
+      if (fn) {
+        result = fn.apply(context || this, args);
+        fn = null;
+      }
+
+      return result;
+    };
   }
 };
 

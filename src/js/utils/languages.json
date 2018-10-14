@@ -9,11 +9,14 @@
     "blood_type_head": "გლუკოზის ანალიზის ტიპი",
     "auto_save_head": "ავტომატური მონაცემების შენახვა",
     "set_date_head": "მიუთითეთ თარიღი და დღეების რაოდენობა",
-    "sort_time_head": "დროის დახარისხება",
+    "sort_time_head": "დროის დახარისხება და სვეტის წაშლა",
     "insulins_use_head": "გამოიყენებადი ინსულინები ",
+    "warning_head": "გაფრთხილება",
     "auto_save_label": "ავტომატური შენახვა",
     "doses_link": "დოზები",
+    "warning_link": "გადადით აქ",
     "info": "აქ შეგიძლიათ: დაამატოთ დოზები, წაშალოთ ისინი, შეცვალოთ ისინი; დაამატოთ დრო, წაშალოთ და შეცვალეთ იგი; თქვენ ასევე შეგიძლიათ დაამატოთ ან წაშალოთ ინსულინი , რომელოს ტქვენ  გჭირდებათ. ყურადღება: ექიმთან კონსულტაციის გარეშე, არ შეასრულოთ ეს მანიპულაციები, წინააღმდეგ შემთხვევაში შეიძლება ზიანი მიაყენოს თქვენს ჯანმრთელობას",
+    "warning_text": "გამარჯობა, ახალო მომხმარებელო, მოგესალმები! რადგან ახალი მომხმარებელი ხართ, და ჯერ-ჯერობით არ გაქვთ თქვენი დოზების ცხრილი, ამიტომ პირველ რიგში უნდა შექმნათ იგი , მხოლოდ მერე გადმოხვიდეთ აქ.",
     "buttons": {
       "save_btn": "მონაცემების შენახვა",
       "load_btn": "ჩამოტვირთეთ მონაცემები",
@@ -21,6 +24,16 @@
       "print": "დაბეჭვდა",
       "submit_btn": "გაგზავნა",
       "addInsulin_btn": "ინსულინის დამატება"
+    },
+    "messages": {
+      "deleteColumn": "ნამდვილად გსურთ წაშალოთ სვეტი?",
+      "deleteFromColumn": "ნამდვილად გსურთ ამ სვეტიდან %_% წაშლა?",
+      "deleteInsulin": "ნამდვილად გინდათ %_% წაშლა?",
+      "deleted": "%_% წარმატებით წაიშალა!",
+      "setTheTime": "დაადგინეთ დრო, უპირველეს ყოვლისა",
+      "selectInsType": "აირჩიეთ ინსულინის ტიპი!",
+      "invalidValue": "არასწორი მნიშვნელობა!",
+      "exist": "%_% უკვე არსებობს!"
     }
   },
   "ru": {
@@ -33,11 +46,14 @@
     "blood_type_head": "Тип анализа глюкозы крови",
     "auto_save_head": "Автоматическое сохранение данных",
     "set_date_head": "Укажите дату и количество дней",
-    "sort_time_head": "Сортировка времени",
+    "sort_time_head": "Сортировка времени и удаление столбца",
     "insulins_use_head": "Используемые инсулины",
+    "warning_head": "Предупреждение!",
     "auto_save_label": "Автосохранение",
     "doses_link": "Дозы",
+    "warning_link": "Передите сюда",
     "info": "Здесь вы можете: добавлять дозы, удалять их, заменять; добавить время, а также удалить и изменить его; вы также можете добавить или удалить необходимый вам инсулин. Внимание: не консультируясь с врачом, не выполняйте эти манипуляции самостоятельно, иначе это может нанести ущерб вашему здоровью",
+    "warning_text": "Привет, новый пользователь, добро пожаловать! Поскольку вы новый пользователь, вы еще не создали свою таблицу доз, так что прежде всего создайте таблицу ваших доз, а затем вернитесь сюда.",
     "buttons": {
       "save_btn": "Сохранить данные",
       "load_btn": "Загрузить данные",
@@ -45,6 +61,16 @@
       "print": "Распечатать",
       "submit_btn": "Отправить",
       "addInsulin_btn": "Добавить инсулин"
+    },
+    "messages": {
+      "deleteColumn": "Вы уверены, что хотите удалить столбец ?",
+      "deleteFromColumn": "Вы действительно хотите удалить %_% из этой колонки ?",
+      "deleteInsulin": "Вы действительно хотите удалить %_%?",
+      "deleted": "%_% удален успешно!",
+      "setTheTime": "Установите время, в первую очередь",
+      "selectInsType": "Выберите тип инсулина!",
+      "invalidValue": "Неверное значение!",
+      "exist": "%_% уже существует!"
     }
   },
   "en": {
@@ -57,11 +83,14 @@
     "blood_type_head": "Blood glucose type",
     "auto_save_head": "Auto save data",
     "set_date_head": "Set date and count of day",
-    "sort_time_head": "Sort a time",
+    "sort_time_head": "Sorting the time and deleting the column",
     "insulins_use_head": "Insulins in use",
+    "warning_head": "Warning!",
     "auto_save_label": "Save data",
     "doses_link": "Doses",
+    "warning_link": "Go here",
     "info": "Here you can: add doses, remove them, replace them; add time, also delete and change it; you can also add or remove the insulin you need. Attention: without consulting a doctor, do not perform these manipulations yourself, otherwise it can be detrimental to your health ",
+    "warning_text": "Hello, new user, welcome! Since you are a new user, you have not yet created your dose chart, so first of all create a table of your doses, and then go back here.",
     "buttons": {
       "save_btn": "Save data",
       "load_btn": "Load data",
@@ -69,6 +98,16 @@
       "print": "Print",
       "submit_btn": "Submit",
       "addInsulin_btn": "Add insulin"
+    },
+    "messages": {
+      "deleteColumn": "Are you sure you want delete column ?",
+      "deleteFromColumn": "Do you really want to remove %_% from this column ?",
+      "deleteInsulin": "Do you really want to remove %_%?",
+      "deleted": "%_% was deleted successfully!",
+      "setTheTime": "Set the time , first of all",
+      "selectInsType": "Select a insulin type!",
+      "invalidValue": "Invalid value!",
+      "exist": "%_% already exists!"
     }
   }
 }
