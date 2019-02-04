@@ -29,33 +29,141 @@ table thead {
   color: #fff;
   cursor: pointer;
 }
+label {
+  font-size: 1rem;
+}
+h5 {
+  margin: 0;
+}
 tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.05);
 }
+input {
+  padding: 0.25rem;
+}
+button {
+  border: unset;
+  padding: 0.5rem;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #fff;
+}
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/** Id **/
+#durotation {
+  width: 25%;
+}
+#insulins_use,
+#sort_time {
+  margin: 0;
+}
+#insulin_add_form {
+  display: flex;
+  justify-content: center;
+}
+#insulin_add_form > input {
+  flex-basis: 70%;
+}
+#new_column {
+  top: 27px;
+  right: 0;
+}
 
 /** Classes **/
-.apidra,
-.lantus {
+.dose_value {
   color: #ccc;
 }
-.apidra::after {
-  content: "A";
+.dose_value::after {
+  content: attr(data-css);
 }
-.lantus::after {
-  content: "L";
+.empty {
+  background: #000000;
+  height: 70px;
+  width: 70px;
+  margin: 0.15rem;
 }
 
-.add_row {
+.fill {
+  background: #212529;
+  color: #fff;
+  font-weight: bold;
+  height: 60px;
+  width: 60px;
+  position: relative;
+  left: 5px;
+  top: 5px;
+  font-size: 1.25rem;
+  text-align: center;
+  line-height: 60px;
+  transition: 0.35s all;
+}
+.fill:hover {
+  background: #dc3545;
+  transform: scale(1.15);
+}
+
+.hold {
+  border: 3px dashed #fff;
+  border-radius: 10px;
+}
+
+.row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+.col_row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.doses_link {
+  color: #f0ad4e;
+  font-size: 1.2rem;
+  margin-left: 0.25rem;
+}
+.add_row,
+#new_column {
   position: absolute;
   background: #212529;
   color: #fff;
   font-size: 1.5rem;
   border: unset;
-  margin-top: -14px;
   outline: unset;
 }
+
+.add_row {
+  margin-top: -15px;
+}
+
+.info_btn {
+  background: #5bc0de;
+}
 .btn_group {
-  margin-top: 25px;
+  display: inline-flex;
+}
+.load_btn,
+.save_btn {
+  border-radius: unset;
+}
+.save_btn {
+  background: #5cb85c;
+}
+.load_btn {
+  background: #337ab7;
+}
+.submit_btn,
+.addInsulin_btn {
+  background: #5cb85c;
+}
+.print {
+  background: #f0ad4e;
 }
 
 .date {
@@ -92,10 +200,20 @@ tr:nth-child(even) {
 .close {
   position: absolute;
   right: 0;
-  top: -10%;
+  top: 0;
   cursor: pointer;
+  background: #212529;
+  border: unset;
+  color: #fff;
+  font-size: 1.25rem;
+  width: 35px;
+  height: 35px;
+  text-align: center;
 }
-
+.info {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
 /** Modal */
 .modal {
   position: fixed;
@@ -109,24 +227,20 @@ tr:nth-child(even) {
   justify-content: center;
   align-items: center;
   display: none;
+  z-index: 1;
 }
 .modal-content {
-  background: rgba(33, 22, 33, 0.35);
+  background: rgba(51, 51, 51, 0.75);
   padding: 1.5rem;
   border-radius: 3px;
   position: relative;
   color: #fff;
+  max-width: 50%;
 }
 .group {
   display: inline-flex;
   justify-content: center;
   margin-top: 1rem;
-}
-#durotation {
-  width: 25%;
-}
-#insulins_use {
-  margin: 0;
 }
 .ins_type {
   position: relative;
@@ -150,10 +264,13 @@ tr:nth-child(even) {
   margin: 0.5rem 0;
   text-align: center;
 }
-.error {
+.error,
+.delete_dose {
+  color: #fff;
   background: #dc3545;
 }
 .success {
+  color: #fff;
   background: #28a745;
 }
 .insulins_list_item {
@@ -164,4 +281,12 @@ tr:nth-child(even) {
 .insulins_list_item:hover {
   background: #dc3545;
   cursor: pointer;
+}
+.warning {
+  background: #feefb3;
+  color: #9f6000;
+}
+.warning_link {
+  color: tomato;
+  font-size: 1.5rem;
 }

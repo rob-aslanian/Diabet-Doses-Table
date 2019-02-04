@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 
 <head>
     <meta charset="UTF-8">
@@ -10,19 +10,12 @@
 </head>
 
 <body>
-    <button class="save_btn">Save Data</button>
-    <button class="load_btn">Load Data</button>
-    <select name="langs" class="langs">
-        <option disabled>Languages</option>
-        <option value="ge" data-lang="ge" class="lang" selected>Georgian</option>
-        <option value="ru" data-lang="ru" class="lang">Russian</option>
-        <option value="en" data-lang="en" class="lang">English</option>
-    </select>
-    <select name="sugar_types" id="sugar_convertor">
-        <option disabled>Blood Glucose Types </option>
-        <option value="mg" selected>mg/dL</option>
-        <option value="mmol">mmol/L</option>
-    </select>
+    <div class="btn_group">
+        <button class="save_btn">მონაცემების შენახვა</button>
+        <button class="load_btn">ჩამოტვირთეთ მონაცემები</button>
+    </div>
+    <button class="info_btn" onclick="document.querySelector('.modal').style.display = 'flex'">პარამეტრები</button>
+    <button class="print">დაბეჭვდა</button>
     <table>
         <thead>
             <tr class="table_head">
@@ -38,23 +31,53 @@
     </table>
     <div class="modal">
         <div class="modal-content">
+            <div class="row">
+                <h5 class="doses_table_head">ინექციების ცხრილი</h5>
+                <span>
+                    <span class="info">აქ შეგიძლიათ: დაამატოთ დოზები, წაშალოთ ისინი, შეცვალოთ ისინი; დაამატოთ დრო,
+                        წაშალოთ და შეცვალეთ იგი; თქვენ ასევე
+                        შეგიძლიათ დაამატოთ ან წაშალოთ ინსულინი , რომელოს ტქვენ გჭირდებათ. ყურადღება: ექიმთან
+                        კონსულტაციის გარეშე, არ შეასრულოთ
+                        ეს მანიპულაციები, წინააღმდეგ შემთხვევაში შეიძლება ზიანი მიაყენოს თქვენს ჯანმრთელობას </span>
+                    <a href="./doses.html" class="doses_link">დოზები</a>
+                </span>
+            </div>
+            <div class="col_row">
+                <div class="col">
+                    <h5 class="languages_head">ენები</h5>
+                    <select name="langs" class="langs">
+                        <option disabled>Languages</option>
+                        <option value="ka" data-lang="ka" class="lang" selected>ქართული</option>
+                        <option value="ru" data-lang="ru" class="lang">Русский</option>
+                        <option value="en" data-lang="en" class="lang">English</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <h5 class="blood_type_head">გლუკოზის ანალიზის ტიპი</h5>
+                    <select name="sugar_types" id="sugar_convertor">
+                        <option disabled>Blood Glucose Types </option>
+                        <option value="mg" selected>mg/dL</option>
+                        <option value="mmol">mmol/L</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <h5 class="auto_save_head">ავტომატური მონაცემების შენახვა</h5>
+                    <input type="checkbox" id="auto_save">
+                    <label for="auto_save" class="auto_save_label">ავტომატური შენახვა</label>
+                </div>
+            </div>
             <form>
+                <h5 class="set_date_head">მიუთითეთ თარიღი და დღეების რაოდენობა</h5>
                 <div class="group">
                     <input type="date" id="date">
                     <input type="number" id="durotation" placeholder="10">
-                    <button class="set_date">Submit</button>
+                    <button class="set_date submit_btn">გაგზავნა</button>
                 </div>
             </form>
             <button class="close" onclick="document.querySelector('.modal').style.display = 'none' ">X</button>
         </div>
     </div>
-
     <button class="add_row" title="Add new row">+</button>
-    <div class="btn_group">
-        <button id="start_modal" onclick="document.querySelector('.modal').style.display = 'flex'">Set Date</button>
-        <button class="print">Print</button>
-        <button onclick="location.href = './doses.html'">Doses Table</button>
-    </div>
 
     <script src="../dist/js/bundle.js"></script>
 </body>

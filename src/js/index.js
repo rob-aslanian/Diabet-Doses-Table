@@ -23,6 +23,7 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   const langs = document.querySelector(".langs"); // Languages (select)
   const bgTypes = document.querySelector("#sugar_convertor"); // Sugar converter (select)
   const autoSave = document.querySelector("#auto_save"); // Auto save (checkbox)
+  const settings = Common.lsGet("settings");
 
   let date = new DayDate();
   date.getNow();
@@ -89,6 +90,17 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         docTimes.splice(idx, 1);
         e.target.remove();
       }
+    }
+
+    if (!Common.lsGet("settings")) {
+      let _settings = {
+        lang: defaultLang,
+        autoSave: false,
+        insulinType: defaultType
+      };
+      Common.lsSet("settings", _settings);
+    } else {
+      let { lang, insulinType, autoSave } = Common.lsGet("settings");
     }
 
     /** Set Language Value  */
@@ -492,9 +504,10 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
   /** Blood Glucose Type Change*/
   function bgTypeChange() {
     let selectedType = this.options[this.selectedIndex].value,
-      doses = document.querySelectorAll(".dose");
+      doses = document.querySelectorAll(".dose"),
+      type = settings["insulinType"];
 
-    if (Common.getCookie("_type")) {
+    if (type) {
       if (doses.length !== 0) {
         doses.forEach(dose => {
           let type = dose.dataset.type,
@@ -506,6 +519,8 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
           }
         });
       }
+      settings["insulinType"] = selectedType;
+      Common.lsSet("settings", settings);
       Common.setCookie("_type", selectedType, 1);
     }
   }

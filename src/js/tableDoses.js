@@ -21,6 +21,12 @@ if (location.pathname.endsWith("doses.html")) {
     });
     insulins.forEach(insulin => insertInsulin(insulin)); // Insert all insulins in html after laod
 
+    if (insulins.length === 0) {
+      document
+        .querySelector("#new_column")
+        .setAttribute("disabled", "disabled");
+    }
+
     Common.translate();
   })();
 
@@ -67,6 +73,7 @@ if (location.pathname.endsWith("doses.html")) {
   /** Add insulin */
   function addInsulin(e) {
     e.preventDefault();
+    addBtn.removeAttribute("disabled");
     let inputTarget = e.target.firstChild.nextElementSibling,
       regExp = /^\w{3,}$/,
       inputValue = inputTarget.value.toLowerCase(),
@@ -118,37 +125,41 @@ if (location.pathname.endsWith("doses.html")) {
       sMessage = messages["deleted"].replace("%_%", insulin);
 
     if (insulins.includes(insulin) && confirm(wMessage)) {
-      times.forEach((time, idx) => {
-        let deletedItem = doses[time][insulin];
-        if (deletedItem !== undefined) {
-          /** Delete current insulin type from local storage */
-          delete doses[time][insulin];
+      if (times) {
+        times.forEach((time, idx) => {
+          let deletedItem = doses[time][insulin];
+          if (deletedItem !== undefined) {
+            /** Delete current insulin type from local storage */
+            delete doses[time][insulin];
 
-          if (Object.keys(doses[time]).length === 0) {
-            /** Delete from doses time object , if it empty */
-            delete doses[time];
-            times.splice(idx, 1);
+            if (Object.keys(doses[time]).length === 0) {
+              /** Delete from doses time object , if it empty */
+              delete doses[time];
+              times.splice(idx, 1);
 
-            removeColumn(time, idx);
-            /** Set times */
-            Common.lsSet("times", times);
-          }
+              removeColumn(time, idx);
+              /** Set times */
+              Common.lsSet("times", times);
+            }
 
-          /** Remove items from html , which types equal to insulin */
-          document
-            .querySelectorAll(`.ins_type[data-type="${insulin}"]`)
-            .forEach(elems => elems.remove());
+            /** Remove items from html , which types equal to insulin */
+            document
+              .querySelectorAll(`.ins_type[data-type="${insulin}"]`)
+              .forEach(elems => elems.remove());
 
-          /** Set doses */
-          Common.lsSet("doses", doses);
-        } else return;
-      });
+            /** Set doses */
+            Common.lsSet("doses", doses);
+          } else return;
+        });
+      }
 
       let index = insulins.indexOf(insulin);
       insulins.splice(index, 1);
 
       Common.lsSet("insulins", insulins);
       e.target.remove();
+
+      if (insulins.length === 0) addBtn.setAttribute("disabled", "disabled");
 
       return Common.handler.call(
         document.querySelector("#insulin_add_form"),

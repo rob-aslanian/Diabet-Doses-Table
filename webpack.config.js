@@ -40,7 +40,12 @@ const conf = {
   },
   devServer: {
     publicPath: "/dist/",
-    contentBase: path.resolve(__dirname, "src") // Enter point for webpack-dev-server
+    contentBase: path.resolve(__dirname, "src"), // Enter point for webpack-dev-server
+    port: 9000,
+    watchContentBase: true,
+    compress: true,
+    hot: true,
+    open: true
   },
   plugins: [
     ETP,
