@@ -92,17 +92,6 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
       }
     }
 
-    if (!Common.lsGet("settings")) {
-      let _settings = {
-        lang: defaultLang,
-        autoSave: false,
-        insulinType: defaultType
-      };
-      Common.lsSet("settings", _settings);
-    } else {
-      let { lang, insulinType, autoSave } = Common.lsGet("settings");
-    }
-
     /** Set Language Value  */
     if (!cookieLang) {
       Common.setCookie("_lang", defaultLang, 1);
@@ -161,35 +150,6 @@ if (location.pathname === "/" || location.pathname.endsWith("index.html")) {
         return saveData();
       }
     });
-
-    // docRef.get().then(el => {
-    //   if (el && el.exists) {
-    //     let data = el.data(),
-    //       type = data["type"],
-    //       result = {};
-
-    //     if (data[type] !== undefined) {
-    //       data[type].forEach($data => {
-    //         if (createDoseObj($data, value) !== undefined) {
-    //           result[type] = createDoseObj($data, value);
-    //         }
-    //       });
-    //     } else {
-    //       if (Common.isArray(type)) {
-    //         type.forEach(tp => {
-    //           data[tp].forEach($data => {
-    //             if (createDoseObj($data, value) !== undefined) {
-    //               result[tp] = createDoseObj($data, value);
-    //             }
-    //           });
-    //         });
-    //       }
-    //     }
-    //     value = bgType === "mg" ? Math.round(value) : value.toFixed(1);
-    //     createSpan(this, result, value, bgType);
-    //   }
-
-    // });
   }
   /**
    *  Create new span or spans ,
